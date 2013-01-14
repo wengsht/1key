@@ -1,0 +1,1 @@
+cmd_/home/wengsht/program/1key/src/ok_crypto.ko := ld -r -m elf_i386 -T /usr/src/linux-3.2.12-gentoo/scripts/module-common.lds --build-id  -o /home/wengsht/program/1key/src/ok_crypto.ko /home/wengsht/program/1key/src/ok_crypto.o /home/wengsht/program/1key/src/ok_crypto.mod.o
