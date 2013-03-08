@@ -1,0 +1,17 @@
+.*swp
+*.swo
+*.cmd
+*.o
+*.ko
+.*swp
+*.swo
+*.cmd
+*.o
+*.ko
+*/*.o
+*/*.swp
+*/*.swo
+*/*.cmd
+*/*.ko
+
+
