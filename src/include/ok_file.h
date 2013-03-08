@@ -19,7 +19,10 @@
 #ifndef __OK_FILE_H__
 #define __OK_FILE_H__
 
-#include <linux/fs.h>
+#include "ok.h"
+#include "ok_type.h"
+#include "ok_file.h"
+#include "ok_mem.h"
 
 loff_t ok_llseek(struct file *, loff_t, int);
 ssize_t ok_read(struct file *, char __user *, size_t, loff_t *);

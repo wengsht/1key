@@ -15,8 +15,7 @@
  *
  * =====================================================================================
  */
-#include "ok_mem.h"
-#include <linux/slab.h>
+#include "ok.h"
 
 OK_RESULT ok_trim(struct ok_dev *ok_devp)
 {
@@ -42,7 +41,7 @@ OK_RESULT ok_trim(struct ok_dev *ok_devp)
     ok_devp->qset = OK_QSET;
     ok_devp->quantum = OK_QUANTUM;
     ok_devp->data = NULL;
-    printk(KERN_DEBUG "ok_trim success\n");
+    OKDEBUG( "ok_trim success\n");
 
     return OK_SUCCESS;
 }
@@ -55,7 +54,7 @@ struct ok_qset * ok_alloc_qsetp(void)
 
     if(!ret)
     {
-        printk(KERN_DEBUG "ok_qset alloc failed\n");
+        OKDEBUG( "ok_qset alloc failed\n");
         return ret;
     }
     return ret;
@@ -67,7 +66,7 @@ void ** ok_alloc_data()
     ret = kmalloc(sizeof(void *) * OK_QSET, GFP_KERNEL);
     if(!ret)
     {
-        printk(KERN_DEBUG "ok_data alloc failed\n");
+        OKDEBUG( "ok_data alloc failed\n");
         return ret;
     }
     memset(ret, 0, sizeof(void *) * OK_QSET);
@@ -80,7 +79,7 @@ char * ok_alloc_quantum(void)
 
     if(!ret)
     {
-        printk(KERN_DEBUG "ok_quantum alloc failed\n");
+        OKDEBUG( "ok_quantum alloc failed\n");
 
         return ret;
     }
@@ -92,13 +91,13 @@ struct ok_qset * ok_get_qsetp(struct ok_dev* devp, int qset_no)
 
     if(!ret)
     {
-        printk(KERN_DEBUG "ok_qset setting\n");
+        OKDEBUG( "ok_qset setting\n");
         devp->data = ok_alloc_qsetp(); //kmalloc(sizeof(struct ok_qset), GFP_KERNEL);
         ret = devp->data;
     }
     if(!ret)
     {
-        printk(KERN_DEBUG "ok_qset failed\n");
+        OKDEBUG( "ok_qset failed\n");
         return ret;
     }
 

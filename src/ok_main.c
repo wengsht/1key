@@ -16,21 +16,13 @@
  *
  * =====================================================================================
  */
-#include <linux/init.h>
-#include <linux/module.h>
-#include <linux/fs.h>   // file
-#include <linux/cdev.h>   //cdev
-#include "ok_type.h"
-#include "ok_main.h"
-//#include ok_file.h"
+#include "ok.h"
 #include "ok_file.h"
-#include <linux/slab.h>   //kmalloc
-#include "ok_mem.h"
 
 MODULE_LICENSE("Dual BSD/GPL");
 static dev_t devno;
 static int ok_major = 0, ok_minor = 0;
-static char dev_name[] = "ok_crypto";
+static char ok_dev_name[] = "ok_crypto";
 
 module_param(ok_major, int, S_IRUGO);
 
@@ -41,7 +33,7 @@ struct file_operations ok_fops =
     .read   = ok_read,
     .write  = ok_write,
     .unlocked_ioctl = ok_unlocked_ioctl,
-    .compat_ioctl  = ok_compat_ioctl,
+//    .compat_ioctl  = ok_compat_ioctl,
     .open   = ok_open,
     .release = ok_release,
 };
@@ -50,7 +42,6 @@ struct ok_dev *ok_devs;
 
 static OK_RESULT ok_setup_cdev(struct ok_dev *dev, int dev_index)
 {
-    printk("2: %p\n", dev);
     OK_RESULT result;
     dev_t tmp_devno = MKDEV(ok_major, ok_minor+dev_index);
 
@@ -65,7 +56,7 @@ static OK_RESULT ok_setup_cdev(struct ok_dev *dev, int dev_index)
     dev->data = NULL;
     result = cdev_add(&dev->cdev, tmp_devno, 1);
     if(result != OK_SUCCESS)
-        printk(KERN_NOTICE "Error init char dev !\n");
+        OKDEBUG("Error init char dev!\n");
     
     return result;
 }
@@ -75,11 +66,11 @@ static OK_RESULT ok_cleanup(void)
     dev_t tmp_devno = MKDEV(ok_major, ok_minor);
 
     unregister_chrdev_region(tmp_devno, OK_NR_DEVS);
-    printk(KERN_NOTICE "unregister_chrdev_region done !\n");
+    OKDEBUG( "unregister_chrdev_region done !\n");
 
     if(ok_devs)
     {
-        printk(KERN_NOTICE "freeing ok_devs\n");
+        OKDEBUG( "freeing ok_devs\n");
         for(i = 0;i < OK_NR_MINOR;i++)
             ok_trim(&ok_devs[i]);
 
@@ -99,18 +90,18 @@ static OK_RESULT init_devices(void)
     if(ok_major)
     {
         devno = MKDEV(ok_major, ok_minor);
-        result = register_chrdev_region(devno, OK_NR_DEVS, dev_name);
+        result = register_chrdev_region(devno, OK_NR_DEVS, ok_dev_name);
     }
     else
     {
-        result = alloc_chrdev_region(&devno, ok_minor, OK_NR_DEVS, dev_name);
+        result = alloc_chrdev_region(&devno, ok_minor, OK_NR_DEVS, ok_dev_name);
 
         ok_major = MAJOR(devno);
     }
 
     if(result < 0)
     {
-        printk(KERN_WARNING "ok_crypto region init failed!\n");
+        OKDEBUG( "ok_crypto region init failed!\n");
 
         goto fail;
     }
@@ -119,7 +110,7 @@ static OK_RESULT init_devices(void)
 
     if(!ok_devs)
     {
-        printk(KERN_WARNING "ok_crypto init ok_devs kmalloc error\n");
+        OKDEBUG( "ok_crypto init ok_devs kmalloc error\n");
         result = -ENOMEM;
         ok_devs = NULL;
 
@@ -132,7 +123,7 @@ static OK_RESULT init_devices(void)
         
         if(OK_SUCCESS != result)
         {
-            printk(KERN_WARNING "ok_crypto device init failed!\n");
+            OKDEBUG( "ok_crypto device init failed!\n");
 
             goto fail;
         }
@@ -147,24 +138,24 @@ fail:
 static int ok_crypto_init(void)
 {
     OK_RESULT result;
-    printk(KERN_ALERT "One key crypto module starting!\n");
+    OKDEBUG( "One key crypto module starting!\n");
 
     result = init_devices();
 
     if(result != OK_SUCCESS)
     {
-        printk(KERN_WARNING "ok_crypto init failed!\n");
+        OKDEBUG( "ok_crypto init failed!\n");
 
         goto out;
     }
 
-    printk(KERN_NOTICE "One key crypto module start done\n");
+    OKDEBUG( "One key crypto module start done\n");
 out:
     return result;
 }
 static void ok_crypto_exit(void)
 {
-    printk(KERN_ALERT "One key crypto module exiting!\n");
+    OKDEBUG( "One key crypto module exiting!\n");
 
     ok_cleanup();
 }

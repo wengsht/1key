@@ -18,16 +18,10 @@
 
 #ifndef __OK_TYPE_H__
 #define __OK_TYPE_H__
-#include <linux/cdev.h>
-#include <linux/kernel.h>
-#include <linux/init.h>
-#include <linux/module.h>
-#include <linux/fs.h>
 
-typedef unsigned int OK_RESULT;
+#include "ok.h"
 
-#define OK_SUCCESS 0
-
+// data struct 
 #define OK_QSET 128
 #define OK_QUANTUM 1024
 #define OK_NR_DEVS 1
