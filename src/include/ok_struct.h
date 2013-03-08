@@ -19,12 +19,13 @@
 #ifndef _OK_STRUCT_H_
 #define _OK_STRUCT_H_
 
-#include "ok.h"
+#include "ok_const.h"
 
 struct Ok_version
 {
     char ok_name[OK_MAX_VERSION_NAME_LEN];
     unsigned long ok_version_id;
+    char ok_author_name[OK_MAX_AUTHOR_NAME_LEN];
 };
 
 #endif

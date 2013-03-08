@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  test.c
+ *       Filename:  ok_api_const.h
  *
  *    Description:  
  *
  *        Version:  1.0
- *        Created:  01/15/2013 08:33:18 PM
+ *        Created:  03/08/2013 02:49:32 PM
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -15,21 +15,18 @@
  *
  * =====================================================================================
  */
-#include <stdlib.h>
 
-#include "ok_api_const.h"
-#include "ok_api_all.h"
+#ifndef __OK_API_CONST_H_
+#define __OK_API_CONST_H_
 
-int main()
+typedef unsigned long OK_OBJECT;
+
+
+struct OK_CONTEXT
 {
-    struct OK_CONTEXT ok_context;
+    int fs;
+};
 
-    Ok_Create_Context(&ok_context);
+#define DEV_FILE_NAME "/dev/ok_crypto0"
 
-    Ok_Print_Version(&ok_context);
-
-    Ok_Free_Context(&ok_context);
-
-    return 0;
-}
-
+#endif

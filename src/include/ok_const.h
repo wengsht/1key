@@ -23,11 +23,15 @@ typedef unsigned int OK_RESULT;
 
 // version 
 #define OK_MAX_VERSION_NAME_LEN 25
+#define OK_MAX_AUTHOR_NAME_LEN 15
 #define OK_DEFAULT_NAME "One Key Crypto"
+#define OK_AUTHOR_NAME "wengsht@SYSU"
 #define OK_VERSION_ID 1
 
 // Error Code
 #define OK_SUCCESS 0
+#define OK_FILE_OPEN_ERROR -11
+#define OK_VALUE_ERROR -12
 
 // ioctl
 #define OK_MAGIC 'o'

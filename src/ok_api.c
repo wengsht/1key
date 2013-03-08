@@ -27,9 +27,12 @@ OK_RESULT ok_print_version(unsigned long arg)
 
     strcpy(ok_version->ok_name, OK_DEFAULT_NAME);
     ok_version->ok_version_id =  OK_VERSION_ID;
+    strcpy(ok_version->ok_author_name, OK_AUTHOR_NAME);
 
     res = copy_to_user((void *)arg, ok_version, sizeof(struct Ok_version));
-            return res;
 
- 
+    kfree(ok_version);
+    ok_version = NULL;
+
+    return res;
 }

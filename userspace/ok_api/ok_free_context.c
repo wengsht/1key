@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  test.c
+ *       Filename:  ok_free_context.c
  *
  *    Description:  
  *
  *        Version:  1.0
- *        Created:  01/15/2013 08:33:18 PM
+ *        Created:  03/08/2013 03:21:03 PM
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -15,21 +15,20 @@
  *
  * =====================================================================================
  */
-#include <stdlib.h>
 
+#include "ok_const.h"
 #include "ok_api_const.h"
 #include "ok_api_all.h"
 
-int main()
+OK_RESULT Ok_Free_Context(struct OK_CONTEXT *ok_context)
 {
-    struct OK_CONTEXT ok_context;
+    if(ok_context == NULL)
+        return OK_VALUE_ERROR;
 
-    Ok_Create_Context(&ok_context);
+    if(ok_context->fs < 0)
+        return OK_VALUE_ERROR;
 
-    Ok_Print_Version(&ok_context);
+    close(ok_context->fs);
 
-    Ok_Free_Context(&ok_context);
-
-    return 0;
+    return OK_SUCCESS;
 }
-
