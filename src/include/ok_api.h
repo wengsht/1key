@@ -20,6 +20,15 @@
 #define __OK_API_H_
 
 #include "ok.h"
+#include "tomcrypt.h"
 OK_RESULT ok_print_version(unsigned long arg);
+
+OK_RESULT ok_store_srk(rsa_key *key);
+
+OK_RESULT ok_create_key(rsa_key **key);
+
+OK_RESULT ok_create_srk(rsa_key **key);
+OK_RESULT ok_load_srk(rsa_key **key);
+OK_RESULT ok_free_rsa_key(rsa_key **key);
 
 #endif

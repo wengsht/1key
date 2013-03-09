@@ -28,6 +28,8 @@ OK_RESULT Ok_Free_Context(struct OK_CONTEXT *ok_context)
     if(ok_context->fs < 0)
         return OK_VALUE_ERROR;
 
+    ioctl(ok_context->fs, OK_CLEAR);
+
     close(ok_context->fs);
 
     return OK_SUCCESS;

@@ -1,6 +1,6 @@
 DEBUG = y
 obj-m := ok_crypto.o
-ok_crypto-objs := ok_main.o ok_file.o ok_mem.o ok_test.o ok_api.o
+ok_crypto-objs := ok_main.o ok_file.o ok_mem.o ok_test.o ok_api.o ok_crypto_api.o
 
 TOMMATH_OBJECTS = libtommath/bncore.o libtommath/bn_mp_init.o libtommath/bn_mp_clear.o libtommath/bn_mp_exch.o libtommath/bn_mp_grow.o libtommath/bn_mp_shrink.o \
 	libtommath/bn_mp_clamp.o libtommath/bn_mp_zero.o  libtommath/bn_mp_set.o libtommath/bn_mp_set_int.o libtommath/bn_mp_init_size.o libtommath/bn_mp_copy.o \
@@ -60,8 +60,8 @@ libtomcrypt/misc/zeromem.o libtomcrypt/misc/crypt/crypt_argchk.o \
 	libtomcrypt/pk/pkcs1/pkcs_1_oaep_encode.o libtomcrypt/pk/pkcs1/pkcs_1_os2ip.o libtomcrypt/pk/pkcs1/pkcs_1_pss_decode.o \
 	libtomcrypt/pk/pkcs1/pkcs_1_pss_encode.o libtomcrypt/pk/pkcs1/pkcs_1_v1_5_decode.o libtomcrypt/pk/pkcs1/pkcs_1_v1_5_encode.o \
 	libtomcrypt/misc/pk_get_oid.o libtomcrypt/pk/asn1/der/x509/der_encode_subject_public_key_info.o \
-	libtomcrypt/pk/asn1/der/x509/der_decode_subject_public_key_info.o
-#libtomcrypt/pk/rsa/rsa_import.o \libtomcrypt/pk/rsa/rsa_export.o 
+	libtomcrypt/pk/asn1/der/x509/der_decode_subject_public_key_info.o 
+
 
 
 #TOMCRYPT_OBJECTS = libtomcrypt-kernel/pk/pkcs1/pkcs_1_i2osp.o \

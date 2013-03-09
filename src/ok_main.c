@@ -24,6 +24,9 @@ static dev_t devno;
 static int ok_major = 0, ok_minor = 0;
 static char ok_dev_name[] = "ok_crypto";
 
+
+rsa_key * srk_key;
+
 module_param(ok_major, int, S_IRUGO);
 
 struct file_operations ok_fops = 
@@ -140,6 +143,8 @@ static int ok_crypto_init(void)
     OK_RESULT result;
     OKDEBUG( "One key crypto module starting!\n");
 
+
+    srk_key = NULL;
     result = init_devices();
 
     if(result != OK_SUCCESS)
@@ -156,6 +161,8 @@ out:
 static void ok_crypto_exit(void)
 {
     OKDEBUG( "One key crypto module exiting!\n");
+
+    ok_free_rsa_key(&srk_key);
 
     ok_cleanup();
 }

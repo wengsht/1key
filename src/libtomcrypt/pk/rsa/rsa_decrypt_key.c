@@ -30,7 +30,7 @@
    @param padding     Type of padding (LTC_LTC_PKCS_1_OAEP or LTC_LTC_PKCS_1_V1_5)
    @param stat        [out] Result of the decryption, 1==valid, 0==invalid
    @param key         The corresponding private RSA key
-   @return CRYPT_OK if succcessul (even if invalid)
+   @return CRYPT_OK if succcessul (even if invalidvalid)
 */
 int rsa_decrypt_key_ex(const unsigned char *in, unsigned long inlen,
 		       unsigned char *out, unsigned long *outlen,

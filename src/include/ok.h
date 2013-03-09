@@ -43,7 +43,9 @@
 #include <ok_struct.h>
 #include <ok_const.h>
 #include <ok_type.h>
+#include "ok_crypto_api.h"
 
+extern rsa_key *srk_key;
 
 
 #endif

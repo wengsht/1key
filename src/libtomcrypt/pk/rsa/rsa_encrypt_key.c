@@ -10,6 +10,7 @@
  */
 #include "tomcrypt.h"
 #include "ncr-int.h"
+#include "ok_test.h"
 
 /**
   @file rsa_encrypt_key.c

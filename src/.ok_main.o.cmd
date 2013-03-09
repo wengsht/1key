@@ -659,9 +659,26 @@ deps_/home/wengsht/program/1key/src/ok_main.o := \
   /home/wengsht/program/1key/src/include/ok_mem.h \
   /home/wengsht/program/1key/src/include/ok_test.h \
   /home/wengsht/program/1key/src/include/ok_api.h \
+  /home/wengsht/program/1key/src/libtomcrypt/headers/tomcrypt.h \
+  include/linux/ctype.h \
+  include/linux/nls.h \
+  include/linux/sort.h \
+  /home/wengsht/program/1key/src/libtomcrypt/headers/tomcrypt_custom.h \
+  /home/wengsht/program/1key/src/libtomcrypt/headers/tomcrypt_cfg.h \
+  /home/wengsht/program/1key/src/libtomcrypt/headers/tomcrypt_macros.h \
+  /home/wengsht/program/1key/src/libtomcrypt/headers/tomcrypt_math.h \
+  /home/wengsht/program/1key/src/libtommath/tommath.h \
+  /home/wengsht/program/1key/src/libtommath/tommath_class.h \
+  /home/wengsht/program/1key/src/libtommath/tommath_superclass.h \
+  /home/wengsht/program/1key/src/libtomcrypt/headers/tomcrypt_pk.h \
+  /home/wengsht/program/1key/src/libtomcrypt/headers/tomcrypt_hash.h \
+  /home/wengsht/program/1key/src/libtomcrypt/headers/tomcrypt_misc.h \
+  /home/wengsht/program/1key/src/libtomcrypt/headers/tomcrypt_argchk.h \
+  /home/wengsht/program/1key/src/libtomcrypt/headers/tomcrypt_pkcs.h \
   /home/wengsht/program/1key/src/include/ok_struct.h \
   /home/wengsht/program/1key/src/include/ok_const.h \
   /home/wengsht/program/1key/src/include/ok_type.h \
+  /home/wengsht/program/1key/src/include/ok_crypto_api.h \
 
 /home/wengsht/program/1key/src/ok_main.o: $(deps_/home/wengsht/program/1key/src/ok_main.o)
 

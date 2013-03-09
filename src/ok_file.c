@@ -267,6 +267,32 @@ static void test1()
     rsa_free(key);
     kfree(key);
 }
+void test2()
+{
+    struct file *fp;
+    mm_segment_t fs;
+    loff_t pos;
+    fp = filp_open("/root/1.txt", O_RDWR | O_CREAT, 0644);
+
+    char buf[] = "wengsht";
+    if(IS_ERR(fp))
+    {
+        OKDEBUG("open file error\n");
+
+        return ;
+    }
+    fs = get_fs();
+    set_fs(KERNEL_DS);
+    pos = 0;
+    vfs_write(fp, buf, sizeof(buf), &pos);
+    buf[0] = '0';
+    pos = 0;
+    vfs_read(fp, buf, sizeof(buf), &pos);
+    printk("%s\n", buf);
+    filp_close(fp, NULL);
+    set_fs(fs);
+    return ;
+}
 long ok_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
     switch((cmd))
@@ -274,6 +300,20 @@ long ok_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
         case OK_VERSION:
             ok_print_version(arg);
             break;
+        case OK_SRK_CREATE:
+            ok_create_srk(&srk_key);
+
+            break;
+        case OK_SRK_LOAD:
+            ok_load_srk(&srk_key);
+
+            break;
+
+        case OK_CLEAR:
+            break;
+
+            
+
         default:
             return -ENOTTY; 
     }

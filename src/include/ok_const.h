@@ -32,9 +32,16 @@ typedef unsigned int OK_RESULT;
 #define OK_SUCCESS 0
 #define OK_FILE_OPEN_ERROR -11
 #define OK_VALUE_ERROR -12
+#define OK_KEY_CREATE_ERROR -13
+
+#define OK_RSA_KEY_SIZE 128
+#define E_VALUE  65537
 
 // ioctl
 #define OK_MAGIC 'o'
 #define OK_VERSION _IOR(OK_MAGIC, 1, struct Ok_version)
+#define OK_SRK_CREATE _IO(OK_MAGIC, 2)
+#define OK_SRK_LOAD _IO(OK_MAGIC, 3)
+#define OK_CLEAR _IO(OK_MAGIC, 4)
 
 #endif

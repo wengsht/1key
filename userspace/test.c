@@ -17,6 +17,7 @@
  */
 #include <stdlib.h>
 
+#include "ok_const.h"
 #include "ok_api_const.h"
 #include "ok_api_all.h"
 
@@ -27,6 +28,9 @@ int main()
     Ok_Create_Context(&ok_context);
 
     Ok_Print_Version(&ok_context);
+
+    //ioctl(ok_context.fs, OK_SRK_CREATE);
+    ioctl(ok_context.fs, OK_SRK_LOAD);
 
     Ok_Free_Context(&ok_context);
 

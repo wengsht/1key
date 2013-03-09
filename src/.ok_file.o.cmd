@@ -659,9 +659,6 @@ deps_/home/wengsht/program/1key/src/ok_file.o := \
   /home/wengsht/program/1key/src/include/ok_mem.h \
   /home/wengsht/program/1key/src/include/ok_test.h \
   /home/wengsht/program/1key/src/include/ok_api.h \
-  /home/wengsht/program/1key/src/include/ok_struct.h \
-  /home/wengsht/program/1key/src/include/ok_const.h \
-  /home/wengsht/program/1key/src/include/ok_type.h \
   /home/wengsht/program/1key/src/libtomcrypt/headers/tomcrypt.h \
   include/linux/ctype.h \
   include/linux/nls.h \
@@ -678,6 +675,10 @@ deps_/home/wengsht/program/1key/src/ok_file.o := \
   /home/wengsht/program/1key/src/libtomcrypt/headers/tomcrypt_misc.h \
   /home/wengsht/program/1key/src/libtomcrypt/headers/tomcrypt_argchk.h \
   /home/wengsht/program/1key/src/libtomcrypt/headers/tomcrypt_pkcs.h \
+  /home/wengsht/program/1key/src/include/ok_struct.h \
+  /home/wengsht/program/1key/src/include/ok_const.h \
+  /home/wengsht/program/1key/src/include/ok_type.h \
+  /home/wengsht/program/1key/src/include/ok_crypto_api.h \
 
 /home/wengsht/program/1key/src/ok_file.o: $(deps_/home/wengsht/program/1key/src/ok_file.o)
 
