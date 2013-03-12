@@ -20,6 +20,7 @@
 #include "ok_test.h"
 #include "tomcrypt.h"
 
+#include "ok_crypto_api.h"
 OK_RESULT ok_print_version(unsigned long arg)
 {
     OK_RESULT res;
@@ -55,14 +56,15 @@ static OK_RESULT vfs_load_mp_int(struct file *fp, unsigned char *buf, mp_int *in
 
     vfs_read(fp, in->dp, *((int *)buf), pos); 
 }
-OK_RESULT ok_store_srk(rsa_key *key)
+
+OK_RESULT ok_store_rsa_key(rsa_key *key, char *file_name)
 {
     unsigned char *tmp = (unsigned char *) kmalloc(sizeof(mp_digit) * (key->N).used + sizeof(int) * 4, GFP_KERNEL);
 
     struct file *fp;
     mm_segment_t fs;
     loff_t pos;
-    fp = filp_open("/root/SRK_KEY_FILE", O_RDWR | O_CREAT, 0644);
+    fp = filp_open(file_name, O_RDWR | O_CREAT, 0644);
 
     if(IS_ERR(fp))
     {
@@ -110,6 +112,10 @@ OK_RESULT ok_store_srk(rsa_key *key)
     tmp = NULL;
     return OK_SUCCESS;
 }
+OK_RESULT ok_store_srk(rsa_key *key)
+{
+    return ok_store_rsa_key(key, SRK_KEY_FILE);
+}
 
 OK_RESULT ok_create_key(rsa_key **key)
 {
@@ -131,6 +137,122 @@ OK_RESULT ok_create_srk(rsa_key **key)
 
     return OK_SUCCESS;
 }
+static OK_RESULT ok_store_blob(unsigned char *blob, char *filename)
+{
+    struct file *fp;
+    mm_segment_t fs;
+    loff_t pos = 0;
+    fp = filp_open(filename, O_RDWR | O_CREAT, 0644);
+
+    if(IS_ERR(fp))
+    {
+        OKDEBUG("open file error\n");
+
+        return OK_FILE_OPEN_ERROR;
+    }
+    fs = get_fs();
+    set_fs(KERNEL_DS);
+
+    vfs_write(fp, blob, *((int *)blob) + 4, &pos);
+
+    filp_close(fp, NULL);
+    set_fs(fs);
+}
+static OK_RESULT ok_load_blob(unsigned char *blob, char *filename)
+{
+    struct file *fp;
+    mm_segment_t fs;
+    loff_t pos = 0;
+    fp = filp_open(filename, O_RDWR | O_CREAT, 0644);
+
+    if(IS_ERR(fp))
+    {
+        OKDEBUG("open file error\n");
+
+        return OK_FILE_OPEN_ERROR;
+    }
+    fs = get_fs();
+    set_fs(KERNEL_DS);
+
+
+    vfs_read(fp, blob, 4, &pos);
+    vfs_read(fp, blob+4, *((int *)blob), &pos); 
+
+
+    filp_close(fp, NULL);
+    set_fs(fs);
+}
+OK_RESULT ok_create_user_rsa(unsigned long __user arg)
+{
+    int len;
+    copy_from_user(&len, (void *)arg, 4);
+    char *tmp= (char *)kmalloc(len+5, GFP_KERNEL);
+    copy_from_user(tmp, (void *)(arg), len+4);
+    tmp[len+4] = '\0';
+
+    char *filename = tmp + 4;
+
+
+    rsa_key * user_key;
+    ok_create_key(&user_key);
+
+    unsigned char *blob = (unsigned char *)kmalloc(mp_unsigned_bin_size(&(user_key->N)) * 20, GFP_KERNEL);
+
+    ok_encrypt_rsa_by_srk(user_key, blob);
+
+    ok_store_blob(blob, filename);
+
+    ok_free_rsa_key(&user_key);
+
+    kfree(tmp);
+    kfree(blob);
+    tmp = NULL;
+
+    return OK_SUCCESS;
+}
+OK_RESULT ok_load_user_rsa(unsigned long __user arg)
+{
+    int len;
+    copy_from_user(&len, (void *)arg, 4);
+    char *tmp= (char *)kmalloc(len+5, GFP_KERNEL);
+    copy_from_user(tmp, (void *)(arg), len+4);
+    tmp[len+4] = '\0';
+
+    char *filename = tmp + 4;
+
+    rsa_key * user_key;
+
+
+    ok_create_key(&user_key);
+
+    unsigned char *blob = (unsigned char *)kmalloc(mp_unsigned_bin_size(&(user_key->N)) * 20, GFP_KERNEL);
+    ok_load_blob(blob, filename);
+
+    ok_decrypt_rsa_by_srk(user_key, blob);
+
+    copy_to_user((void *)arg, &user_key, sizeof(rsa_key *));
+
+    
+    /* 
+    char tmp2[128] = "wengsht v6";
+    len = 11;
+    char out[128];
+    int outlen = 128;
+    rsa_encrypt_data(tmp2, len, out, &outlen, user_key);
+    len = 128;
+    tmp2[0] = '0';
+    rsa_decrypt_data(out, outlen, tmp2, &len, user_key);
+    printk("de test \n");
+    printk("%s\n", tmp2);
+
+    printk("xxd %p\n", user_key);
+    */
+
+    kfree(blob);
+    kfree(tmp);
+
+    return OK_SUCCESS;
+}
 OK_RESULT ok_free_rsa_key(rsa_key **key)
 {
     OKDEBUG("free rsa key ! \n ");
@@ -144,8 +266,7 @@ OK_RESULT ok_free_rsa_key(rsa_key **key)
 
     return OK_SUCCESS;
 }
-
-OK_RESULT ok_load_srk(rsa_key **key)
+OK_RESULT ok_load_rsa_key(rsa_key **key, char *file_name)
 {
     ok_free_rsa_key(key);
     ok_create_key(key);
@@ -155,7 +276,7 @@ OK_RESULT ok_load_srk(rsa_key **key)
     struct file *fp;
     mm_segment_t fs;
     loff_t pos;
-    fp = filp_open("/root/SRK_KEY_FILE", O_RDWR, 0644);
+    fp = filp_open(file_name, O_RDWR, 0644);
 
     if(IS_ERR(fp))
     {
@@ -202,4 +323,8 @@ OK_RESULT ok_load_srk(rsa_key **key)
     kfree(tmp);
     tmp = NULL;
     return OK_SUCCESS;
+}
+OK_RESULT ok_load_srk(rsa_key **key)
+{
+    return ok_load_rsa_key(key, SRK_KEY_FILE);
 }

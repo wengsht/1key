@@ -47,5 +47,7 @@
 
 extern rsa_key *srk_key;
 
+#define SRK_KEY_FILE "/root/SRK_KEY_FILE"
+
 
 #endif

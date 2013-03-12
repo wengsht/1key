@@ -20,6 +20,7 @@
 #define __OK_CONST_H_
 
 typedef unsigned int OK_RESULT;
+typedef unsigned int OK_KEY;
 
 // version 
 #define OK_MAX_VERSION_NAME_LEN 25
@@ -33,6 +34,7 @@ typedef unsigned int OK_RESULT;
 #define OK_FILE_OPEN_ERROR -11
 #define OK_VALUE_ERROR -12
 #define OK_KEY_CREATE_ERROR -13
+#define OK_SRK_NOT_FOUND -14
 
 #define OK_RSA_KEY_SIZE 128
 #define E_VALUE  65537
@@ -43,5 +45,7 @@ typedef unsigned int OK_RESULT;
 #define OK_SRK_CREATE _IO(OK_MAGIC, 2)
 #define OK_SRK_LOAD _IO(OK_MAGIC, 3)
 #define OK_CLEAR _IO(OK_MAGIC, 4)
+#define OK_USER_RSA_CREATE _IOW(OK_MAGIC, 1, int)
+#define OK_USER_RSA_LOAD   _IOWR(OK_MAGIC, 1, int)
 
 #endif

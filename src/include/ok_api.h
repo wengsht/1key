@@ -23,11 +23,16 @@
 #include "tomcrypt.h"
 OK_RESULT ok_print_version(unsigned long arg);
 
+OK_RESULT ok_store_rsa_key(rsa_key *key, char *file_name);
 OK_RESULT ok_store_srk(rsa_key *key);
 
 OK_RESULT ok_create_key(rsa_key **key);
 
+OK_RESULT ok_create_user_rsa(unsigned long __user arg);
+OK_RESULT ok_load_user_rsa(unsigned long __user arg);
 OK_RESULT ok_create_srk(rsa_key **key);
+
+OK_RESULT ok_load_rsa_key(rsa_key **key, char *file_name);
 OK_RESULT ok_load_srk(rsa_key **key);
 OK_RESULT ok_free_rsa_key(rsa_key **key);
 

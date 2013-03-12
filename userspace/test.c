@@ -16,6 +16,7 @@
  * =====================================================================================
  */
 #include <stdlib.h>
+#include <string.h>
 
 #include "ok_const.h"
 #include "ok_api_const.h"
@@ -29,8 +30,14 @@ int main()
 
     Ok_Print_Version(&ok_context);
 
-    //ioctl(ok_context.fs, OK_SRK_CREATE);
-    ioctl(ok_context.fs, OK_SRK_LOAD);
+    char s[] = "/home/wengsht/1.txt";
+
+    Ok_Create_Srk(&ok_context);
+    Ok_Load_Srk(&ok_context);
+    Ok_Create_User_Rsa(&ok_context, s);
+    int out;
+    Ok_Load_User_Rsa(&ok_context, s, &out);
+    printf("%p\n", (int *)out);
 
     Ok_Free_Context(&ok_context);
 

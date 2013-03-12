@@ -309,6 +309,15 @@ long ok_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
             break;
 
+        case OK_USER_RSA_CREATE:
+            ok_create_user_rsa(arg);
+
+            break;
+        case OK_USER_RSA_LOAD:
+            ok_load_user_rsa(arg);
+            break;
+
+
         case OK_CLEAR:
             break;
 
