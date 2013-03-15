@@ -31,6 +31,12 @@ OK_RESULT rsa_decrypt_data(const unsigned char *in, unsigned inlen,
 OK_RESULT ok_encrypt_rsa_by_srk(rsa_key *in, unsigned char *blob);
 OK_RESULT ok_decrypt_rsa_by_srk(rsa_key *in, unsigned char *blob);
 
+OK_RESULT rsa_encrypt_data_extend(const unsigned char *in, unsigned inlen,
+        unsigned char *blob, unsigned long *outlen, rsa_key *key);
 
+OK_RESULT rsa_decrypt_data_extend(const unsigned char *in, unsigned inlen,
+        unsigned char *blob, unsigned long *outlen, rsa_key *key);
+
+OK_RESULT ok_make_hash(unsigned char *in, int inlen, unsigned char *hash, int *outlen);
 
 #endif

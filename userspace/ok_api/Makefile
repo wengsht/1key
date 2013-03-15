@@ -3,7 +3,7 @@ LIB_OK_API_NAME = libok_api.so
 
 ALL: $(LIB_OK_API_NAME)
 
-$(LIB_OK_API_NAME): ok_create_context.o ok_free_context.o ok_print_version.o ok_create_user_rsa.o ok_create_srk.o ok_load_srk.o ok_load_user_rsa.o
+$(LIB_OK_API_NAME): ok_create_context.o ok_free_context.o ok_print_version.o ok_create_user_rsa.o ok_create_srk.o ok_load_srk.o ok_load_user_rsa.o ok_encrypt_user_data_by_rsa.o ok_decrypt_user_data_by_rsa.o ok_make_hash.o ok_sign_hash.o ok_verify_hash.o
 	gcc -shared $(CFLAGS) $? -o $@
 
 ok_create_context.o: ok_create_context.c
@@ -25,6 +25,21 @@ ok_create_user_rsa.o: ok_create_user_rsa.c
 	gcc -c $? $(CFLAGS)
 
 ok_load_user_rsa.o: ok_load_user_rsa.c
+	gcc -c $? $(CFLAGS)
+
+ok_encrypt_user_data_by_rsa.o: ok_encrypt_user_data_by_rsa.c
+	gcc -c $? $(CFLAGS)
+
+ok_decrypt_user_data_by_rsa.o: ok_decrypt_user_data_by_rsa.c
+	gcc -c $? $(CFLAGS)
+
+ok_make_hash.o: ok_make_hash.c
+	gcc -c $? $(CFLAGS)
+
+ok_sign_hash.o:ok_sign_hash.c 
+	gcc -c $? $(CFLAGS)
+	
+ok_verify_hash.o: ok_verify_hash.c
 	gcc -c $? $(CFLAGS)
 
 clean:

@@ -46,4 +46,15 @@ OK_RESULT Ok_Create_User_Rsa(struct OK_CONTEXT * ok_context, char *filename);
 
 OK_RESULT Ok_Load_User_Rsa(struct OK_CONTEXT * ok_context, char *filename, OK_KEY *handle);
 
+OK_RESULT Ok_Encrypt_User_Data_By_Rsa(struct OK_CONTEXT * ok_context, unsigned char *in, unsigned int inlen,
+        unsigned char * out, unsigned int *outlen, OK_KEY handle);
+
+OK_RESULT Ok_Decrypt_User_Data_By_Rsa(struct OK_CONTEXT * ok_context, unsigned char *in, unsigned int inlen,
+        unsigned char * out, unsigned int *outlen, OK_KEY handle);
+
+OK_RESULT Ok_Sign_Hash(struct OK_CONTEXT * ok_context, unsigned char *hash, unsigned int hashlen,
+        unsigned char * out, unsigned int *outlen, OK_KEY handle);
+
+OK_RESULT Ok_Verify_Hash(struct OK_CONTEXT * ok_context, unsigned char *hash, unsigned int hashlen,
+        unsigned char * blob, unsigned int bloblen, int *ret, OK_KEY handle);
 #endif

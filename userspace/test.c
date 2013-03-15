@@ -30,15 +30,76 @@ int main()
 
     Ok_Print_Version(&ok_context);
 
-    char s[] = "/home/wengsht/1.txt";
+    char ss[] = "/home/wengsht/1.txt";
 
     Ok_Create_Srk(&ok_context);
     Ok_Load_Srk(&ok_context);
-    Ok_Create_User_Rsa(&ok_context, s);
+    Ok_Create_User_Rsa(&ok_context, ss);
     int out;
-    Ok_Load_User_Rsa(&ok_context, s, &out);
+    Ok_Load_User_Rsa(&ok_context, ss, &out);
     printf("%p\n", (int *)out);
 
+    /*  
+    char s[4000] = "            wengsht v9";
+    *((int *)(s+4)) = out;
+    *((int *)(s+8)) = 11;
+    ioctl(ok_context.fs, OK_RSA_ENCRYPT, s+4);
+
+    *((int *)s) = out;
+    ioctl(ok_context.fs, OK_RSA_DECRYPT, s);
+    printf("%s\n", s+4);
+    */
+    /* 
+    char s[] = "wengsht v9";
+
+
+    int inlen = 11;
+    int outlen = 1024;
+    char tmp[1024];
+    Ok_Encrypt_User_Data_By_Rsa(&ok_context, s, inlen, tmp, &outlen, out);
+    inlen = 1024;
+    s[5] = '0';
+    Ok_Decrypt_User_Data_By_Rsa(&ok_context, tmp, outlen, s, &inlen, out);
+
+    printf("%s\n", s);
+    */
+    char str[] = "0engsht";
+    unsigned char hash[16];
+    int outlen = 16;
+    Ok_Make_Hash(&ok_context, str, 7, hash, outlen);
+
+    int i;
+    for(i = 0;i < 16;i++)
+    {
+        printf("%x ", (unsigned char)hash[i]);
+    }
+    printf("\n");
+
+
+    /*
+    char outp[4000];
+    *((int *) outp) = out;
+    memcpy(outp+4, hash, 16);
+    char out2[4000];
+    ioctl(ok_context.fs, OK_SIGN_HASH, outp);
+
+    *((int *) out2) = out;
+    memcpy(out2+4, hash, 16);
+
+    *((int *) (out2+20)) = *((int *)outp);
+    memcpy(out2+24, outp+4, *((int *)outp));
+    ioctl(ok_context.fs, OK_VERIFY_HASH, out2);
+    printf("verify: %d\n", *((int *)out2));
+    */
+    char outp[4000];
+    int outlenp = 1024;
+    Ok_Sign_Hash(&ok_context, hash, 16, outp, &outlenp, out);
+
+    int ret;
+    Ok_Verify_Hash(&ok_context, hash, 16, outp, outlenp, &ret, out);
+
+    printf("ver:%d\n", ret);
+    
     Ok_Free_Context(&ok_context);
 
     return 0;

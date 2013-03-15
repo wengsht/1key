@@ -36,4 +36,12 @@ OK_RESULT ok_load_rsa_key(rsa_key **key, char *file_name);
 OK_RESULT ok_load_srk(rsa_key **key);
 OK_RESULT ok_free_rsa_key(rsa_key **key);
 
+OK_RESULT ok_rsa_encrypt_user_data(unsigned long arg);
+OK_RESULT ok_rsa_decrypt_user_data(unsigned long arg);
+OK_RESULT ok_make_user_hash(unsigned long arg);
+
+OK_RESULT ok_sign_user_hash(unsigned long arg);
+
+OK_RESULT ok_verify_user_hash(unsigned long arg);
+
 #endif

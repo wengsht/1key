@@ -234,18 +234,15 @@ OK_RESULT ok_load_user_rsa(unsigned long __user arg)
 
     
     /* 
-    char tmp2[128] = "wengsht v6";
-    len = 11;
-    char out[128];
-    int outlen = 128;
-    rsa_encrypt_data(tmp2, len, out, &outlen, user_key);
-    len = 128;
+    char tmp2[1024] = "wengsht v6";
+    len = 560;
+    char out[1024];
+    int outlen = 1024;
+    rsa_encrypt_data_extend(tmp2, len, out, &outlen, user_key);
+    len = 1024;
     tmp2[0] = '0';
-    rsa_decrypt_data(out, outlen, tmp2, &len, user_key);
-    printk("de test \n");
-    printk("%s\n", tmp2);
-
-    printk("xxd %p\n", user_key);
+    rsa_decrypt_data_extend(out, outlen, tmp2, &len, user_key);
+    printk("%d %s\n", len, tmp2);
     */
 
     kfree(blob);
@@ -327,4 +324,137 @@ OK_RESULT ok_load_rsa_key(rsa_key **key, char *file_name)
 OK_RESULT ok_load_srk(rsa_key **key)
 {
     return ok_load_rsa_key(key, SRK_KEY_FILE);
+}
+
+OK_RESULT ok_rsa_encrypt_user_data(unsigned long arg)
+{
+    rsa_key *key;
+    int inlen, outlen;
+    unsigned char *in, *out;
+    copy_from_user((void *)(&key), (void *)arg, sizeof(rsa_key *));
+    copy_from_user(&inlen, (unsigned char *)arg + sizeof(rsa_key *), sizeof(int));
+    in = (unsigned char *)kmalloc(inlen, GFP_KERNEL);
+    outlen = inlen * 2;
+    outlen = max(outlen, mp_unsigned_bin_size(&(key->N)) * 3);
+    out = (unsigned char *)kmalloc(outlen, GFP_KERNEL);
+
+    copy_from_user(in, (unsigned char *)arg + sizeof(rsa_key *) + sizeof(int), inlen);
+
+    rsa_encrypt_data_extend(in, inlen, out+4, &outlen, key);
+    *(int *)out = outlen;
+
+    copy_to_user((void *)arg, out, outlen + 4);
+    kfree(out);
+    kfree(in);
+
+    return OK_SUCCESS;
+}
+OK_RESULT ok_rsa_decrypt_user_data(unsigned long arg)
+{
+    rsa_key *key;
+    int inlen, outlen;
+    unsigned char *in, *out;
+    copy_from_user((void *)(&key), (void *)arg, sizeof(rsa_key *));
+    copy_from_user(&inlen, (unsigned char *)arg + sizeof(rsa_key *), sizeof(int));
+    in = (unsigned char *)kmalloc(inlen, GFP_KERNEL);
+    outlen = inlen * 2;
+    outlen = max(outlen, mp_unsigned_bin_size(&(key->N)) * 3);
+    out = (unsigned char *)kmalloc(outlen, GFP_KERNEL);
+
+    copy_from_user(in, (unsigned char *)arg + sizeof(rsa_key *) + sizeof(int), inlen);
+
+    rsa_decrypt_data_extend(in, inlen, out+4, &outlen, key);
+    *(int *)out = outlen;
+
+    copy_to_user((void *)arg, out, outlen + 4);
+
+    kfree(out);
+    kfree(in);
+
+    return OK_SUCCESS;
+}
+
+OK_RESULT ok_make_user_hash(unsigned long arg)
+{ 
+    int inlen;
+    unsigned char * in;
+    copy_from_user(&inlen, (void *)arg, 4);
+
+    in = (unsigned char *)kmalloc(inlen, GFP_KERNEL);
+    copy_from_user(in, (unsigned char *)(arg + 4), inlen);
+
+    unsigned char hash[OK_BIN_HASH_LEN];
+    int outlen = OK_BIN_HASH_LEN;
+
+    ok_make_hash(in, inlen, hash, &outlen);
+
+    copy_to_user((void *)arg, hash, OK_BIN_HASH_LEN);
+
+    kfree(in);
+    in = NULL;
+    return OK_SUCCESS;
+}
+
+OK_RESULT ok_sign_user_hash(unsigned long arg)
+{
+    rsa_key *key;
+    copy_from_user((void *)(&key), (void *)arg, sizeof(rsa_key *));
+    unsigned char * hash = kmalloc(OK_BIN_HASH_LEN, GFP_KERNEL);
+    unsigned char * out = kmalloc(OK_MP_LEN * 2, GFP_KERNEL);
+    int outlen = OK_MP_LEN * 2;
+    copy_from_user(hash, (unsigned char*)arg + 4, OK_BIN_HASH_LEN);
+
+    rsa_encrypt_data(hash, OK_BIN_HASH_LEN, out, &outlen, key);
+
+    copy_to_user((void *)arg, &outlen, 4);
+    copy_to_user((unsigned char *)arg + 4, out, outlen);
+
+    kfree(hash);
+    kfree(out);
+
+    return OK_SUCCESS;
+}
+
+OK_RESULT ok_verify_user_hash(unsigned long arg)
+{
+    rsa_key *key;
+    copy_from_user((void *)(&key), (void *)arg, sizeof(rsa_key *));
+
+    unsigned char * hash = kmalloc(OK_BIN_HASH_LEN, GFP_KERNEL);
+    unsigned char * out = kmalloc(OK_MP_LEN * 2, GFP_KERNEL);
+    unsigned char * tmp = kmalloc(OK_MP_LEN * 2, GFP_KERNEL);
+
+    int tmplen, outlen = OK_MP_LEN * 2;
+    copy_from_user(hash, (unsigned char*)arg + 4, OK_BIN_HASH_LEN);
+    copy_from_user(&tmplen, (unsigned char *)arg + 20, 4);
+    copy_from_user(tmp, (unsigned char *)arg + 24, tmplen);
+
+    rsa_decrypt_data(tmp, tmplen, out, &outlen, key);
+
+    printk("hash ver: %d\n", outlen);
+    output_hex(out, 16);
+
+    int ret = 1;
+    if(outlen != OK_BIN_HASH_LEN)
+        ret = 0;
+    else 
+    {
+        int i;
+        for(i = 0;i < OK_BIN_HASH_LEN;i++)
+        {
+            if(hash[i] != out[i])
+            {
+                ret = 0;
+
+                break;
+            }
+        }
+    }
+    copy_to_user((void *)arg, &ret, 4);
+
+    kfree(hash);
+    kfree(tmp);
+    kfree(out);
+
+    return OK_SUCCESS;
 }
