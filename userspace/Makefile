@@ -3,9 +3,12 @@ LDFLAGS +=
 
 LIB_OK_API = ./ok_api/libok_api.so
 
-all: test
+all: test aes
 
 test: $(LIB_OK_API) test.c
+	gcc $? -o $@ $(CFLAGS) $(LDFLAGS)
+
+aes: $(LIB_OK_API) test_aes.c
 	gcc $? -o $@ $(CFLAGS) $(LDFLAGS)
 
 $(LIB_OK_API):

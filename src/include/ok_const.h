@@ -41,19 +41,33 @@ typedef unsigned int OK_KEY;
 
 #define OK_BIN_HASH_LEN 16
 #define OK_MP_LEN 128
-// ioctl
+// ioctl version
 #define OK_MAGIC 'o'
 #define OK_VERSION _IOR(OK_MAGIC, 1, struct Ok_version)
+
+// SRK
 #define OK_SRK_CREATE _IO(OK_MAGIC, 2)
 #define OK_SRK_LOAD _IO(OK_MAGIC, 3)
 #define OK_CLEAR _IO(OK_MAGIC, 4)
+
+// RSA
 #define OK_USER_RSA_CREATE _IOW(OK_MAGIC, 5, int)
 #define OK_USER_RSA_LOAD   _IOWR(OK_MAGIC, 6, int)
-
 #define OK_RSA_ENCRYPT _IOWR(OK_MAGIC, 7, int)
 #define OK_RSA_DECRYPT _IOWR(OK_MAGIC, 8, int)
+
+// HASH 
 #define OK_MAKE_HASH _IOWR(OK_MAGIC, 9, int)
 #define OK_SIGN_HASH _IOWR(OK_MAGIC, 10, int)
 #define OK_VERIFY_HASH _IOWR(OK_MAGIC, 11, int)
+
+// AES 
+#define OK_USER_AES_CREATE _IOW(OK_MAGIC, 12, int)
+#define OK_USER_AES_LOAD   _IOWR(OK_MAGIC, 13, int)
+#define OK_AES_ENCRYPT     _IOWR(OK_MAGIC, 14, int)
+#define OK_AES_DECRYPT     _IOWR(OK_MAGIC, 15, int)
+
+#define AES_KEY_LEN 16
+#define AES_BLOCK_LEN 16
 
 #endif

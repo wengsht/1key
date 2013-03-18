@@ -18,6 +18,8 @@
 #include "ok.h"
 
 #include "tomcrypt.h"
+#include <linux/crypto.h>
+#include <linux/scatterlist.h>
 
 loff_t ok_llseek(struct file *filp, loff_t loff, int whence)
 {
@@ -212,87 +214,6 @@ out:
     up(&devp->sem);
     return count;
 }
-static void test()
-{
-    char data[8] = "abcdefg";
-    u32 len = 7;
-    u8 hash[16];
-
-    u32 size = 0;
-
-    struct shash_desc * sdescmd5;
-
-    struct crypto_shash * md5 = crypto_alloc_shash("md5", 0, 0);
-    if(IS_ERR(md5))
-        return ;
-    size = sizeof(struct shash_desc) + crypto_shash_descsize(md5);
-    sdescmd5 = kmalloc(size, GFP_KERNEL);
-
-    sdescmd5->tfm = md5;
-    sdescmd5->flags = 0x0;
-    crypto_shash_init(sdescmd5);
-
-    crypto_shash_update(sdescmd5, data, len);
-    crypto_shash_final(sdescmd5, hash);
-
-    output_hex(hash, 16);
-    kfree(sdescmd5);
-
-    crypto_free_shash(md5);
-}
-static void test1()
-{
-    rsa_key *key;
-
-    key = (rsa_key *)kmalloc(sizeof(rsa_key), GFP_KERNEL);
-    rsa_make_key(128, 65537, key);
-
-    unsigned char msg[1024] = "wengshtv5";
-    unsigned long msglen = 9;
-    int block_type = LTC_LTC_PKCS_1_EME;
-    unsigned long modulus_bitlen = mp_count_bits(&(key->N));
-    unsigned char out[1024];
-    unsigned long outlen = 1024;
-
-    pkcs_1_v1_5_encode(msg, msglen, block_type, modulus_bitlen, out, &outlen);
-
-    msglen = 99;
-    int is_valid;
-    pkcs_1_v1_5_decode(out, outlen, block_type,modulus_bitlen, msg, &msglen, &is_valid);
-
-    msg[20] = '\0';
-    printk("%s\n", msg);
-
-
-    rsa_free(key);
-    kfree(key);
-}
-void test2()
-{
-    struct file *fp;
-    mm_segment_t fs;
-    loff_t pos;
-    fp = filp_open("/root/1.txt", O_RDWR | O_CREAT, 0644);
-
-    char buf[] = "wengsht";
-    if(IS_ERR(fp))
-    {
-        OKDEBUG("open file error\n");
-
-        return ;
-    }
-    fs = get_fs();
-    set_fs(KERNEL_DS);
-    pos = 0;
-    vfs_write(fp, buf, sizeof(buf), &pos);
-    buf[0] = '0';
-    pos = 0;
-    vfs_read(fp, buf, sizeof(buf), &pos);
-    printk("%s\n", buf);
-    filp_close(fp, NULL);
-    set_fs(fs);
-    return ;
-}
 long ok_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
     switch((cmd))
@@ -333,11 +254,20 @@ long ok_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
             ok_verify_user_hash(arg);
             break;
 
-
+        case OK_USER_AES_CREATE:
+            ok_create_user_aes(arg);
+            break;
+        case OK_USER_AES_LOAD:
+            ok_load_user_aes(arg);
+            break;
+        case OK_AES_ENCRYPT:
+            ok_aes_encrypt_user_data(arg);
+            break;
+        case OK_AES_DECRYPT:
+            ok_aes_decrypt_user_data(arg);
+            break;
         case OK_CLEAR:
             break;
-
-            
 
         default:
             return -ENOTTY; 

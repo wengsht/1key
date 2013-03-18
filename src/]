@@ -42,6 +42,4 @@ OK_RESULT ok_make_hash(unsigned char *in, int inlen, unsigned char *hash, int *o
 OK_RESULT ok_encrypt_aes_by_srk(unsigned char * aes_key, unsigned char *blob);
 OK_RESULT ok_decrypt_aes_by_srk(unsigned char *aes_key, unsigned char *blob);
 
-OK_RESULT aes_encrypt_data_extend(unsigned char *in,int inlen, unsigned char *out, int *outlen,unsigned char * key);
-OK_RESULT aes_decrypt_data_extend(unsigned char *in,int inlen, unsigned char *out, int *outlen,unsigned char * key);
 #endif

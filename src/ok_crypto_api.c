@@ -244,3 +244,73 @@ OK_RESULT ok_make_hash(unsigned char *in, int inlen, unsigned char *hash, int *o
     kfree(sdescmd5);
     crypto_free_shash(md5);
 }
+OK_RESULT ok_encrypt_aes_by_srk(unsigned char * aes_key, unsigned char *blob)
+{
+    int inlen = AES_KEY_LEN;
+    *((int *)blob) = OK_MP_LEN * 3;
+
+    rsa_encrypt_data_extend(aes_key, inlen, blob+4, (int *)blob, srk_key);
+
+    return OK_SUCCESS;
+}
+OK_RESULT ok_decrypt_aes_by_srk(unsigned char *aes_key, unsigned char *blob)
+{
+    int outlen = AES_KEY_LEN;
+    rsa_decrypt_data_extend(blob+4,*((int *)blob), aes_key, &outlen, srk_key);
+
+    if(outlen != AES_KEY_LEN)
+        return OK_VALUE_ERROR;
+    return OK_SUCCESS;
+
+}
+
+OK_RESULT aes_encrypt_data_extend(unsigned char *in,int inlen, unsigned char *out, int *outlen,unsigned char * key)
+{
+	struct crypto_cipher *tfm;
+
+	tfm = crypto_alloc_cipher("aes", 0, CRYPTO_ALG_ASYNC);
+	if (!IS_ERR(tfm))
+		crypto_cipher_setkey(tfm, key, 16);
+
+    int tmp_in_len = 0;
+    int tmp_out_len = 0;
+
+    while(tmp_in_len < inlen)
+    {
+        if(tmp_out_len + AES_BLOCK_LEN > *outlen)
+            return OK_VALUE_ERROR;
+
+        crypto_cipher_encrypt_one(tfm, out+tmp_out_len, in + tmp_in_len);
+        tmp_in_len += AES_BLOCK_LEN;
+        tmp_out_len += AES_BLOCK_LEN;
+    }
+
+	crypto_free_cipher(tfm);
+
+    return OK_SUCCESS;
+}
+OK_RESULT aes_decrypt_data_extend(unsigned char *in,int inlen, unsigned char *out, int *outlen,unsigned char * key)
+{
+	struct crypto_cipher *tfm;
+
+	tfm = crypto_alloc_cipher("aes", 0, CRYPTO_ALG_ASYNC);
+	if (!IS_ERR(tfm))
+		crypto_cipher_setkey(tfm, key, 16);
+
+    int tmp_in_len = 0;
+    int tmp_out_len = 0;
+
+    while(tmp_in_len < inlen)
+    {
+        if(tmp_out_len + AES_BLOCK_LEN > *outlen)
+            return OK_VALUE_ERROR;
+
+        crypto_cipher_decrypt_one(tfm, out+tmp_out_len, in + tmp_in_len);
+        tmp_in_len += AES_BLOCK_LEN;
+        tmp_out_len += AES_BLOCK_LEN;
+    }
+
+	crypto_free_cipher(tfm);
+
+    return OK_SUCCESS;
+}

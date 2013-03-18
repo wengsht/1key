@@ -34,11 +34,24 @@ int main()
 
     Ok_Create_Srk(&ok_context);
     Ok_Load_Srk(&ok_context);
-    Ok_Create_User_Rsa(&ok_context, ss);
+
+    Ok_Create_User_Aes(&ok_context, ss);
     int out;
-    Ok_Load_User_Rsa(&ok_context, ss, &out);
+    Ok_Load_User_Aes(&ok_context, ss, &out);
     printf("%p\n", (int *)out);
 
+    int inlen = 41;
+    int outlen = 1024;
+    char s[1024] = "wengsht v9  256tyyyyuijkjkmnjhuiu87uijkm";
+    char tmp[1024];
+    Ok_Encrypt_User_Data_By_Aes(&ok_context, s, inlen, tmp, &outlen, out);
+    inlen = 1024;
+    s[5] = '0';
+    printf("%s\n", s);
+    Ok_Decrypt_User_Data_By_Aes(&ok_context, tmp, outlen, s, &inlen, out);
+
+
+    printf("%s\n", s);
     /*  
     char s[4000] = "            wengsht v9";
     *((int *)(s+4)) = out;
@@ -63,6 +76,7 @@ int main()
 
     printf("%s\n", s);
     */
+    /* 
     char str[] = "0engsht";
     unsigned char hash[16];
     int outlen = 16;
@@ -74,6 +88,7 @@ int main()
         printf("%x ", (unsigned char)hash[i]);
     }
     printf("\n");
+    */
 
 
     /*
@@ -91,6 +106,7 @@ int main()
     ioctl(ok_context.fs, OK_VERIFY_HASH, out2);
     printf("verify: %d\n", *((int *)out2));
     */
+    /*  
     char outp[4000];
     int outlenp = 1024;
     Ok_Sign_Hash(&ok_context, hash, 16, outp, &outlenp, out);
@@ -99,6 +115,7 @@ int main()
     Ok_Verify_Hash(&ok_context, hash, 16, outp, outlenp, &ret, out);
 
     printf("ver:%d\n", ret);
+    */
     
     Ok_Free_Context(&ok_context);
 

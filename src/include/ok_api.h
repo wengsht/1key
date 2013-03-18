@@ -44,4 +44,11 @@ OK_RESULT ok_sign_user_hash(unsigned long arg);
 
 OK_RESULT ok_verify_user_hash(unsigned long arg);
 
+OK_RESULT ok_create_user_aes(unsigned long __user arg);
+
+OK_RESULT ok_load_user_aes(unsigned long __user arg);
+
+OK_RESULT ok_aes_encrypt_user_data(unsigned long arg);
+OK_RESULT ok_aes_decrypt_user_data(unsigned long arg);
+
 #endif
