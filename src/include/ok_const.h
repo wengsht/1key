@@ -67,6 +67,12 @@ typedef unsigned int OK_KEY;
 #define OK_AES_ENCRYPT     _IOWR(OK_MAGIC, 14, int)
 #define OK_AES_DECRYPT     _IOWR(OK_MAGIC, 15, int)
 
+// WRAP KEYS
+#define OK_USER_WRAP_RSA_CREATE  _IOW(OK_MAGIC, 16, int)
+#define OK_USER_WRAP_RSA_LOAD    _IOWR(OK_MAGIC, 17, int)
+#define OK_USER_WRAP_AES_CREATE  _IOW(OK_MAGIC, 18, int)
+#define OK_USER_WRAP_AES_LOAD    _IOWR(OK_MAGIC, 19, int)
+
 #define AES_KEY_LEN 16
 #define AES_BLOCK_LEN 16
 

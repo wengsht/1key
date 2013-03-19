@@ -31,10 +31,31 @@ int main()
     Ok_Print_Version(&ok_context);
 
     char ss[] = "/home/wengsht/1.txt";
+    char ss2[] = "/home/wengsht/2.txt";
 
     Ok_Create_Srk(&ok_context);
     Ok_Load_Srk(&ok_context);
 
+    Ok_Create_User_Rsa(&ok_context, ss);
+    int out;
+    int out2;
+    Ok_Load_User_Rsa(&ok_context, ss, &out);
+    Ok_Create_User_Wrap_Aes(&ok_context, out, ss2);
+    Ok_Load_User_Wrap_Aes(&ok_context, out,ss2, &out2);
+    printf("%p\n", (int *)out);
+
+    int inlen = 41;
+    int outlen = 1024;
+    char s[1024] = "wengsht v9  256tyyyyuijkjkmnjhuiu87uijkm";
+    char tmp[1024];
+    Ok_Encrypt_User_Data_By_Aes(&ok_context, s, inlen, tmp, &outlen, out2);
+    inlen = 1024;
+    s[5] = '0';
+    printf("%s\n", s);
+    Ok_Decrypt_User_Data_By_Aes(&ok_context, tmp, outlen, s, &inlen, out2);
+
+    printf("%s\n", s);
+    /* 
     Ok_Create_User_Aes(&ok_context, ss);
     int out;
     Ok_Load_User_Aes(&ok_context, ss, &out);
@@ -50,8 +71,8 @@ int main()
     printf("%s\n", s);
     Ok_Decrypt_User_Data_By_Aes(&ok_context, tmp, outlen, s, &inlen, out);
 
-
     printf("%s\n", s);
+ */
     /*  
     char s[4000] = "            wengsht v9";
     *((int *)(s+4)) = out;

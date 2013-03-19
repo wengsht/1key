@@ -170,11 +170,11 @@ static OK_RESULT ok_decrypt_mp_by_rsa(mp_int *in, rsa_key *key, unsigned char *b
     return OK_SUCCESS;
 }
 
-OK_RESULT ok_encrypt_rsa_by_srk(rsa_key *in, unsigned char *blob)
+OK_RESULT ok_encrypt_rsa_by_rsa(rsa_key *in, rsa_key *fa, unsigned char * blob)
 {
-    if(srk_key == NULL)
+    if(fa == NULL)
     {
-        OKDEBUG("SRK KEY NOT LOADED!\n");
+        OKDEBUG("RSA KEY NOT LOADED!\n");
 
         return OK_SRK_NOT_FOUND;
     }
@@ -182,22 +182,26 @@ OK_RESULT ok_encrypt_rsa_by_srk(rsa_key *in, unsigned char *blob)
     *(int *)(blob + pos) = in->type;
     pos += 4;
 
-    ok_encrypt_mp_by_rsa(&(in->e), srk_key, blob, &pos);
-    ok_encrypt_mp_by_rsa(&(in->d), srk_key, blob, &pos);
-    ok_encrypt_mp_by_rsa(&(in->N), srk_key, blob, &pos);
-    ok_encrypt_mp_by_rsa(&(in->p), srk_key, blob, &pos);
-    ok_encrypt_mp_by_rsa(&(in->q), srk_key, blob, &pos);
-    ok_encrypt_mp_by_rsa(&(in->qP), srk_key,blob, &pos);
-    ok_encrypt_mp_by_rsa(&(in->dP), srk_key,blob, &pos);
-    ok_encrypt_mp_by_rsa(&(in->dQ), srk_key,blob, &pos);
+    ok_encrypt_mp_by_rsa(&(in->e), fa, blob, &pos);
+    ok_encrypt_mp_by_rsa(&(in->d), fa, blob, &pos);
+    ok_encrypt_mp_by_rsa(&(in->N), fa, blob, &pos);
+    ok_encrypt_mp_by_rsa(&(in->p), fa, blob, &pos);
+    ok_encrypt_mp_by_rsa(&(in->q), fa, blob, &pos);
+    ok_encrypt_mp_by_rsa(&(in->qP), fa,blob, &pos);
+    ok_encrypt_mp_by_rsa(&(in->dP), fa,blob, &pos);
+    ok_encrypt_mp_by_rsa(&(in->dQ), fa,blob, &pos);
 
     *((int *)blob) = pos - 4;
 
     return OK_SUCCESS;
 }
-OK_RESULT ok_decrypt_rsa_by_srk(rsa_key *in, unsigned char *blob)
+OK_RESULT ok_encrypt_rsa_by_srk(rsa_key *in, unsigned char *blob)
 {
-    if(srk_key == NULL)
+    return ok_encrypt_rsa_by_rsa(in, srk_key, blob);
+}
+OK_RESULT ok_decrypt_rsa_by_rsa(rsa_key *in,rsa_key *fa, unsigned char *blob)
+{
+    if(fa == NULL)
     {
         OKDEBUG("SRK KEY NOT LOADED!\n");
 
@@ -206,16 +210,21 @@ OK_RESULT ok_decrypt_rsa_by_srk(rsa_key *in, unsigned char *blob)
     int pos = 4;
     in->type = *((int *)(blob + pos));
     pos += 4;
-    ok_decrypt_mp_by_rsa(&(in->e), srk_key, blob, &pos);
-    ok_decrypt_mp_by_rsa(&(in->d), srk_key, blob, &pos);
-    ok_decrypt_mp_by_rsa(&(in->N), srk_key, blob, &pos);
-    ok_decrypt_mp_by_rsa(&(in->p), srk_key, blob, &pos);
-    ok_decrypt_mp_by_rsa(&(in->q), srk_key, blob, &pos);
-    ok_decrypt_mp_by_rsa(&(in->qP), srk_key,blob, &pos);
-    ok_decrypt_mp_by_rsa(&(in->dP), srk_key,blob, &pos);
-    ok_decrypt_mp_by_rsa(&(in->dQ), srk_key,blob, &pos);
+    ok_decrypt_mp_by_rsa(&(in->e), fa, blob, &pos);
+    ok_decrypt_mp_by_rsa(&(in->d), fa, blob, &pos);
+    ok_decrypt_mp_by_rsa(&(in->N), fa, blob, &pos);
+    ok_decrypt_mp_by_rsa(&(in->p), fa, blob, &pos);
+    ok_decrypt_mp_by_rsa(&(in->q), fa, blob, &pos);
+    ok_decrypt_mp_by_rsa(&(in->qP), fa,blob, &pos);
+    ok_decrypt_mp_by_rsa(&(in->dP), fa,blob, &pos);
+    ok_decrypt_mp_by_rsa(&(in->dQ), fa,blob, &pos);
 
     return OK_SUCCESS;
+}
+
+OK_RESULT ok_decrypt_rsa_by_srk(rsa_key *in, unsigned char *blob)
+{
+    return ok_decrypt_rsa_by_rsa(in, srk_key, blob);
 }
 
 OK_RESULT ok_make_hash(unsigned char *in, int inlen, unsigned char *hash, int *outlen)
@@ -244,23 +253,32 @@ OK_RESULT ok_make_hash(unsigned char *in, int inlen, unsigned char *hash, int *o
     kfree(sdescmd5);
     crypto_free_shash(md5);
 }
-OK_RESULT ok_encrypt_aes_by_srk(unsigned char * aes_key, unsigned char *blob)
+OK_RESULT ok_encrypt_aes_by_rsa(unsigned char * aes_key,rsa_key *fa, unsigned char *blob)
 {
     int inlen = AES_KEY_LEN;
     *((int *)blob) = OK_MP_LEN * 3;
 
-    rsa_encrypt_data_extend(aes_key, inlen, blob+4, (int *)blob, srk_key);
+    rsa_encrypt_data_extend(aes_key, inlen, blob+4, (int *)blob, fa);
 
     return OK_SUCCESS;
+
 }
-OK_RESULT ok_decrypt_aes_by_srk(unsigned char *aes_key, unsigned char *blob)
+OK_RESULT ok_encrypt_aes_by_srk(unsigned char * aes_key, unsigned char *blob)
+{
+    return ok_encrypt_aes_by_rsa(aes_key, srk_key, blob);
+}
+OK_RESULT ok_decrypt_aes_by_rsa(unsigned char *aes_key, rsa_key *fa, unsigned char *blob)
 {
     int outlen = AES_KEY_LEN;
-    rsa_decrypt_data_extend(blob+4,*((int *)blob), aes_key, &outlen, srk_key);
+    rsa_decrypt_data_extend(blob+4,*((int *)blob), aes_key, &outlen, fa);
 
     if(outlen != AES_KEY_LEN)
         return OK_VALUE_ERROR;
     return OK_SUCCESS;
+}
+OK_RESULT ok_decrypt_aes_by_srk(unsigned char *aes_key, unsigned char *blob)
+{
+    return ok_decrypt_aes_by_rsa(aes_key, srk_key, blob);
 
 }
 

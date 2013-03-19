@@ -544,3 +544,117 @@ OK_RESULT ok_aes_decrypt_user_data(unsigned long arg)
 
     return OK_SUCCESS;
 }
+OK_RESULT ok_create_user_wrap_rsa(unsigned long __user arg)
+{
+    rsa_key *pa;
+    copy_from_user(&pa, (void *)arg, 4);
+
+    int len;
+    copy_from_user(&len, (void *)((unsigned char *)arg+4), 4);
+    char *tmp= (char *)kmalloc(len+9, GFP_KERNEL);
+    copy_from_user(tmp, (void *)(arg), len+8);
+    tmp[len+8] = '\0';
+
+    char *filename = tmp + 8;
+
+    rsa_key * user_key;
+    ok_create_key(&user_key);
+
+    unsigned char *blob = (unsigned char *)kmalloc(mp_unsigned_bin_size(&(user_key->N)) * 20, GFP_KERNEL);
+
+    ok_encrypt_rsa_by_rsa(user_key, pa, blob);
+
+    ok_store_blob(blob, filename);
+
+    ok_free_rsa_key(&user_key);
+
+    kfree(tmp);
+    kfree(blob);
+    tmp = NULL;
+
+    return OK_SUCCESS;
+}
+OK_RESULT ok_load_user_wrap_rsa(unsigned long __user arg)
+{
+    rsa_key *pa;
+    copy_from_user(&pa, (void *)arg, 4);
+
+    int len;
+    copy_from_user(&len, (void *)((unsigned char *)arg+4), 4);
+    char *tmp= (char *)kmalloc(len+9, GFP_KERNEL);
+    copy_from_user(tmp, (void *)(arg), len+8);
+    tmp[len+8] = '\0';
+
+    char *filename = tmp + 8;
+
+    rsa_key * user_key;
+
+    ok_create_key(&user_key);
+
+    unsigned char *blob = (unsigned char *)kmalloc(mp_unsigned_bin_size(&(user_key->N)) * 20, GFP_KERNEL);
+    ok_load_blob(blob, filename);
+
+    ok_decrypt_rsa_by_rsa(user_key, pa, blob);
+
+    copy_to_user((void *)arg, &user_key, sizeof(rsa_key *));
+
+    kfree(blob);
+    kfree(tmp);
+
+    return OK_SUCCESS;
+}
+OK_RESULT ok_create_user_wrap_aes(unsigned long __user arg)
+{
+    rsa_key *pa;
+    copy_from_user(&pa, (void *)arg, 4);
+
+    int len;
+    copy_from_user(&len, (void *)((unsigned char *)arg+4), 4);
+    char *tmp= (char *)kmalloc(len+9, GFP_KERNEL);
+    copy_from_user(tmp, (void *)(arg), len+8);
+    tmp[len+8] = '\0';
+
+    char *filename = tmp + 8;
+
+    unsigned char key[AES_KEY_LEN];
+    get_random_bytes(key, AES_KEY_LEN);
+
+    unsigned char *blob = (unsigned char *)kmalloc(OK_MP_LEN * 3, GFP_KERNEL);
+
+    ok_encrypt_aes_by_rsa(key, pa, blob);
+
+    ok_store_blob(blob, filename);
+
+    kfree(tmp);
+    kfree(blob);
+    tmp = NULL;
+
+    return OK_SUCCESS;
+}
+OK_RESULT ok_load_user_wrap_aes(unsigned long __user arg)
+{
+    rsa_key *pa;
+    copy_from_user(&pa, (void *)arg, 4);
+
+    int len;
+    copy_from_user(&len, (void *)((unsigned char *)arg+4), 4);
+    char *tmp= (char *)kmalloc(len+9, GFP_KERNEL);
+    copy_from_user(tmp, (void *)(arg), len+8);
+    tmp[len+8] = '\0';
+
+    char *filename = tmp + 8;
+
+    unsigned char *aes_key = (unsigned char *)kmalloc(AES_KEY_LEN, GFP_KERNEL);
+
+    unsigned char *blob = (unsigned char *)kmalloc(OK_MP_LEN * 3, GFP_KERNEL);
+    ok_load_blob(blob, filename);
+
+    ok_decrypt_aes_by_rsa(aes_key, pa, blob);
+
+    copy_to_user((void *)arg, &aes_key, sizeof(unsigned char *));
+
+    kfree(blob);
+    kfree(tmp);
+
+    return OK_SUCCESS;
+}

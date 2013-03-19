@@ -50,5 +50,13 @@ OK_RESULT ok_load_user_aes(unsigned long __user arg);
 
 OK_RESULT ok_aes_encrypt_user_data(unsigned long arg);
 OK_RESULT ok_aes_decrypt_user_data(unsigned long arg);
+OK_RESULT ok_create_user_wrap_rsa(unsigned long __user arg);
+OK_RESULT ok_load_user_wrap_rsa(unsigned long __user arg);
+OK_RESULT ok_create_user_wrap_aes(unsigned long __user arg);
+OK_RESULT ok_load_user_wrap_aes(unsigned long __user arg);
+OK_RESULT ok_encrypt_rsa_by_rsa(rsa_key *in, rsa_key *fa, unsigned char * blob);
+OK_RESULT ok_decrypt_rsa_by_rsa(rsa_key *in,rsa_key *fa, unsigned char *blob);
+OK_RESULT ok_encrypt_aes_by_rsa(unsigned char * aes_key,rsa_key *fa, unsigned char *blob);
+OK_RESULT ok_decrypt_aes_by_rsa(unsigned char *aes_key, rsa_key *fa, unsigned char *blob);
 
 #endif

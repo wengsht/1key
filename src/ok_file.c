@@ -266,6 +266,21 @@ long ok_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
         case OK_AES_DECRYPT:
             ok_aes_decrypt_user_data(arg);
             break;
+
+        case OK_USER_WRAP_RSA_CREATE:
+            ok_create_user_wrap_rsa(arg);
+            
+            break;
+        case OK_USER_WRAP_RSA_LOAD:
+            ok_load_user_wrap_rsa(arg);
+            break;
+        case OK_USER_WRAP_AES_CREATE:
+            ok_create_user_wrap_aes(arg);
+            break;
+        case OK_USER_WRAP_AES_LOAD:
+            ok_load_user_wrap_aes(arg);
+            break;
+
         case OK_CLEAR:
             break;
 
