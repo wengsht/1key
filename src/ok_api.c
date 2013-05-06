@@ -153,7 +153,7 @@ static OK_RESULT ok_store_blob(unsigned char *blob, char *filename)
     fs = get_fs();
     set_fs(KERNEL_DS);
 
-    vfs_write(fp, blob, *((int *)blob) + 4, &pos);
+    int cc = vfs_write(fp, blob, *((int *)blob) + 4, &pos);
 
     filp_close(fp, NULL);
     set_fs(fs);
@@ -176,8 +176,7 @@ static OK_RESULT ok_load_blob(unsigned char *blob, char *filename)
 
 
     vfs_read(fp, blob, 4, &pos);
-    vfs_read(fp, blob+4, *((int *)blob), &pos); 
-
+    int cc = vfs_read(fp, blob+4, *((int *)blob), &pos); 
 
     filp_close(fp, NULL);
     set_fs(fs);
@@ -190,6 +189,12 @@ OK_RESULT ok_create_user_rsa(unsigned long __user arg)
     copy_from_user(tmp, (void *)(arg), len+4);
     tmp[len+4] = '\0';
 
+    /*  read the passwd to protect user root key */
+    int pass_len;
+    unsigned char passwd[OK_MAX_PASSWD_LEN];
+    copy_from_user(&pass_len, (void *)(arg+len+4), 4);
+    copy_from_user(passwd, (void *)(arg+len+8), pass_len);
+
     char *filename = tmp + 4;
 
 
@@ -199,6 +204,10 @@ OK_RESULT ok_create_user_rsa(unsigned long __user arg)
     unsigned char *blob = (unsigned char *)kmalloc(mp_unsigned_bin_size(&(user_key->N)) * 20, GFP_KERNEL);
 
     ok_encrypt_rsa_by_srk(user_key, blob);
+
+    int hashlen = OK_BIN_HASH_LEN;
+    ok_make_hash(passwd, pass_len, blob+(*((int *)blob))+4, &hashlen);
+    *((int *)blob) += hashlen;
 
     ok_store_blob(blob, filename);
 
@@ -218,15 +227,38 @@ OK_RESULT ok_load_user_rsa(unsigned long __user arg)
     copy_from_user(tmp, (void *)(arg), len+4);
     tmp[len+4] = '\0';
 
+    /*  read the passwd to protect user root key */
+    int pass_len;
+    unsigned char passwd[OK_MAX_PASSWD_LEN];
+    copy_from_user(&pass_len, (void *)(arg+len+4), 4);
+    copy_from_user(passwd, (void *)(arg+len+8), pass_len);
+
+    unsigned char hash[OK_BIN_HASH_LEN];
+    int hashlen = OK_BIN_HASH_LEN;
+
+    ok_make_hash(passwd, pass_len, hash, &hashlen);
+
+
     char *filename = tmp + 4;
 
     rsa_key * user_key;
-
 
     ok_create_key(&user_key);
 
     unsigned char *blob = (unsigned char *)kmalloc(mp_unsigned_bin_size(&(user_key->N)) * 20, GFP_KERNEL);
     ok_load_blob(blob, filename);
+
+    *((int *) blob) -= OK_BIN_HASH_LEN;
+
+    if(memcmp(hash, blob+(*((int *)blob))+4, OK_BIN_HASH_LEN) != 0)
+    {
+        ok_free_rsa_key(&user_key);
+
+        int ret = -1;
+        copy_to_user((void *)arg, &ret, sizeof(rsa_key *));
+
+        return OK_VALUE_ERROR;
+    }
 
     ok_decrypt_rsa_by_srk(user_key, blob);
 
@@ -619,7 +651,7 @@ OK_RESULT ok_create_user_wrap_aes(unsigned long __user arg)
     unsigned char key[AES_KEY_LEN];
     get_random_bytes(key, AES_KEY_LEN);
 
-    unsigned char *blob = (unsigned char *)kmalloc(OK_MP_LEN * 3, GFP_KERNEL);
+    unsigned char *blob = (unsigned char *)kmalloc(OK_MP_LEN * 3 +4, GFP_KERNEL);
 
     ok_encrypt_aes_by_rsa(key, pa, blob);
 

@@ -42,9 +42,9 @@ OK_RESULT Ok_Create_Srk(struct OK_CONTEXT * ok_context);
 OK_RESULT Ok_Load_Srk(struct OK_CONTEXT * ok_context);
 
 
-OK_RESULT Ok_Create_User_Rsa(struct OK_CONTEXT * ok_context, char *filename);
+OK_RESULT Ok_Create_User_Rsa(struct OK_CONTEXT * ok_context, char *filename, char *passwd, int pass_len);
 
-OK_RESULT Ok_Load_User_Rsa(struct OK_CONTEXT * ok_context, char *filename, OK_KEY *handle);
+OK_RESULT Ok_Load_User_Rsa(struct OK_CONTEXT * ok_context, char *filename, char *passwd, int pass_len, OK_KEY *handle);
 
 OK_RESULT Ok_Encrypt_User_Data_By_Rsa(struct OK_CONTEXT * ok_context, unsigned char *in, unsigned int inlen,
         unsigned char * out, unsigned int *outlen, OK_KEY handle);
@@ -67,5 +67,7 @@ OK_RESULT Ok_Decrypt_User_Data_By_Aes(struct OK_CONTEXT * ok_context, unsigned c
 OK_RESULT Ok_Create_User_Wrap_Rsa(struct OK_CONTEXT * ok_context, OK_KEY parent, char *filename);
 OK_RESULT Ok_Create_User_Wrap_Aes(struct OK_CONTEXT * ok_context,OK_KEY parent, char *filename);
 OK_RESULT Ok_Load_User_Wrap_Aes(struct OK_CONTEXT * ok_context,OK_KEY parent, char *filename, OK_KEY *handle);
+
 OK_RESULT Ok_Load_User_Wrap_Rsa(struct OK_CONTEXT * ok_context,OK_KEY parent, char *filename, OK_KEY *handle);
+
 #endif

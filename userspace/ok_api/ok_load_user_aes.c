@@ -32,6 +32,8 @@ OK_RESULT Ok_Load_User_Aes(struct OK_CONTEXT * ok_context, char *filename, OK_KE
 
     char *tmp = (char *) malloc(strlen(filename) + 5);
     *(int *)(tmp) = strlen(filename);
+    memcpy(tmp+4, filename, strlen(filename));
+
     ioctl(ok_context->fs, OK_USER_AES_LOAD, tmp);
 
     *handle = *((int *)tmp);
@@ -39,7 +41,10 @@ OK_RESULT Ok_Load_User_Aes(struct OK_CONTEXT * ok_context, char *filename, OK_KE
     free(tmp);
     tmp = NULL;
 
-    return OK_SUCCESS;
+    if((int)(*handle) == -1)
+        return OK_VALUE_ERROR;
+    else 
+        return OK_SUCCESS;
 }
 
 

@@ -20,8 +20,9 @@
 #include "ok_api_const.h"
 #include "ok_api_all.h"
 #include "string.h"
+#include "ok_log.h"
 
-OK_RESULT Ok_Create_User_Rsa(struct OK_CONTEXT * ok_context, char *filename)
+OK_RESULT Ok_Create_User_Rsa(struct OK_CONTEXT * ok_context, char *filename, char *passwd, int pass_len)
 {
 
     if(ok_context == NULL)
@@ -30,8 +31,18 @@ OK_RESULT Ok_Create_User_Rsa(struct OK_CONTEXT * ok_context, char *filename)
     if(ok_context->fs < 0)
         return OK_FILE_OPEN_ERROR;
 
-    char *tmp = (char *) malloc(strlen(filename) + 5);
+    int fs = open(filename, O_CREAT, S_IRUSR | S_IWUSR);
+    if(fs <= 0)
+        OKDEBUG("open file error");
+    close(fs);
+
+    char *tmp = (char *) malloc(strlen(filename) + pass_len +  9);
     *(int *)(tmp) = strlen(filename);
+    memcpy(tmp+4, filename, strlen(filename));
+
+    *(int *)(tmp+4+strlen(filename)) = pass_len;
+    memcpy(tmp+8+strlen(filename), passwd, pass_len);
+
     ioctl(ok_context->fs, OK_USER_RSA_CREATE, tmp);
 
     free(tmp);

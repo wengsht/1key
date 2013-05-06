@@ -66,6 +66,11 @@ ok_create_user_wrap_rsa.o: ok_create_user_wrap_rsa.c
 ok_load_user_wrap_rsa.o: ok_load_user_wrap_rsa.c
 	gcc -c $? $(CFLAGS)
 
+install:
+	mv ${LIB_OK_API_NAME} /usr/local/lib
+	@echo "###  INSTALL SUCCESS  ###"
+
+
 clean:
 	rm libok_api.so
 	rm *.o

@@ -21,7 +21,7 @@
 #include "ok_api_all.h"
 #include "string.h"
 
-OK_RESULT Ok_Load_User_Rsa(struct OK_CONTEXT * ok_context, char *filename, OK_KEY *handle)
+OK_RESULT Ok_Load_User_Rsa(struct OK_CONTEXT * ok_context, char *filename, char *passwd, int pass_len, OK_KEY *handle)
 {
 
     if(ok_context == NULL)
@@ -30,8 +30,12 @@ OK_RESULT Ok_Load_User_Rsa(struct OK_CONTEXT * ok_context, char *filename, OK_KE
     if(ok_context->fs < 0)
         return OK_FILE_OPEN_ERROR;
 
-    char *tmp = (char *) malloc(strlen(filename) + 5);
+    char *tmp = (char *) malloc(strlen(filename) + pass_len +  9);
     *(int *)(tmp) = strlen(filename);
+    memcpy(tmp+4, filename, strlen(filename));
+
+    *(int *)(tmp+4+strlen(filename)) = pass_len;
+    memcpy(tmp+8+strlen(filename), passwd, pass_len);
     ioctl(ok_context->fs, OK_USER_RSA_LOAD, tmp);
 
     *handle = *((int *)tmp);
@@ -39,7 +43,10 @@ OK_RESULT Ok_Load_User_Rsa(struct OK_CONTEXT * ok_context, char *filename, OK_KE
     free(tmp);
     tmp = NULL;
 
-    return OK_SUCCESS;
+    if((int)(*handle) == -1)
+        return OK_VALUE_ERROR;
+    else 
+        return OK_SUCCESS;
 }
 
 

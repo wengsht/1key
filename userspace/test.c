@@ -36,10 +36,10 @@ int main()
     Ok_Create_Srk(&ok_context);
     Ok_Load_Srk(&ok_context);
 
-    Ok_Create_User_Rsa(&ok_context, ss);
+    Ok_Create_User_Rsa(&ok_context, ss, "123", 3);
     int out;
     int out2;
-    Ok_Load_User_Rsa(&ok_context, ss, &out);
+    Ok_Load_User_Rsa(&ok_context, ss, "123", 3, &out);
     Ok_Create_User_Wrap_Aes(&ok_context, out, ss2);
     Ok_Load_User_Wrap_Aes(&ok_context, out,ss2, &out2);
     printf("%p\n", (int *)out);

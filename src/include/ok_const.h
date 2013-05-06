@@ -75,5 +75,6 @@ typedef unsigned int OK_KEY;
 
 #define AES_KEY_LEN 16
 #define AES_BLOCK_LEN 16
+#define OK_MAX_PASSWD_LEN 56
 
 #endif

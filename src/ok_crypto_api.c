@@ -26,7 +26,7 @@ OK_RESULT rsa_encrypt_data(const unsigned char *in, unsigned inlen,
         rsa_key *key)
 {
     if(*outlen <= 0)
-        *outlen = mp_unsigned_bin_size(&(key->N));
+        *outlen = OK_MP_LEN;
     return rsa_encrypt_key_ex(in, inlen, out, outlen, NULL, 0, NULL, LTC_LTC_PKCS_1_V1_5, key);
 }
 
@@ -36,7 +36,7 @@ OK_RESULT rsa_decrypt_data(const unsigned char *in, unsigned inlen,
         rsa_key *key)
 {
     if(*outlen <= 0)
-        *outlen = mp_unsigned_bin_size(&(key->N));
+        *outlen = OK_MP_LEN;
     int valid;
     return rsa_decrypt_key_ex(in, inlen, out, outlen, NULL, 0, NULL, LTC_LTC_PKCS_1_V1_5, &valid, key);
 }
@@ -46,16 +46,16 @@ OK_RESULT rsa_encrypt_data_extend(const unsigned char *in, unsigned inlen,
 {
     int mx_out = *outlen;
 
-    int block_size = mp_unsigned_bin_size(&(key->N)) - 28;
+    int block_size = OK_MP_LEN - 28;
     int block_out_len, block_in_len ;
     int cnt = 0;
 
     int pos = 0;
 
-    *outlen = 4;
+    *outlen = 4;  
     while(pos < inlen)
     {
-        block_out_len = block_size + 28;
+        block_out_len = OK_MP_LEN;
         block_in_len = min(block_size, inlen - pos);
         
         if(*outlen + 4 + block_out_len > mx_out)
@@ -99,7 +99,7 @@ OK_RESULT rsa_decrypt_data_extend(const unsigned char *in, unsigned inlen,
 
         if(*outlen + block_out_len > mx_len)
         {
-            OKDEBUG("mx len\n");
+            OKDEBUG("de mx len\n");
 
             return OK_VALUE_ERROR;
         }
@@ -269,7 +269,7 @@ OK_RESULT ok_encrypt_aes_by_srk(unsigned char * aes_key, unsigned char *blob)
 }
 OK_RESULT ok_decrypt_aes_by_rsa(unsigned char *aes_key, rsa_key *fa, unsigned char *blob)
 {
-    int outlen = AES_KEY_LEN;
+    int outlen = OK_MP_LEN * 2;
     rsa_decrypt_data_extend(blob+4,*((int *)blob), aes_key, &outlen, fa);
 
     if(outlen != AES_KEY_LEN)

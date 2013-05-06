@@ -4,6 +4,8 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
+AES_BLOCK_LEN	include/ok_const.h	77;"	d
+AES_KEY_LEN	include/ok_const.h	76;"	d
 ARGTYPE	libtomcrypt/headers/tomcrypt_cfg.h	48;"	d
 BNCORE_C	libtommath/tommath_class.h	129;"	d
 BN_ERROR_C	libtommath/tommath_class.h	11;"	d
@@ -1082,16 +1084,19 @@ OIDlen	libtomcrypt/headers/tomcrypt_pk.h	/^	unsigned long OIDlen;$/;"	m	struct:O
 OKDEBUG	include/ok_log.h	24;"	d
 OKDEBUG	include/ok_log.h	26;"	d
 OKDEBUG	include/ok_log.h	29;"	d
+OK_AES_DECRYPT	include/ok_const.h	68;"	d
+OK_AES_ENCRYPT	include/ok_const.h	67;"	d
 OK_AUTHOR_NAME	include/ok_const.h	29;"	d
 OK_BIN_HASH_LEN	include/ok_const.h	42;"	d
-OK_CLEAR	include/ok_const.h	49;"	d
+OK_CLEAR	include/ok_const.h	51;"	d
 OK_DEFAULT_NAME	include/ok_const.h	28;"	d
 OK_FILE_OPEN_ERROR	include/ok_const.h	34;"	d
 OK_KEY	include/ok_const.h	/^typedef unsigned int OK_KEY;$/;"	t
 OK_KEY_CREATE_ERROR	include/ok_const.h	36;"	d
 OK_MAGIC	include/ok_const.h	45;"	d
-OK_MAKE_HASH	include/ok_const.h	55;"	d
+OK_MAKE_HASH	include/ok_const.h	60;"	d
 OK_MAX_AUTHOR_NAME_LEN	include/ok_const.h	27;"	d
+OK_MAX_PASSWD_LEN	include/ok_const.h	78;"	d
 OK_MAX_VERSION_NAME_LEN	include/ok_const.h	26;"	d
 OK_MP_LEN	include/ok_const.h	43;"	d
 OK_NR_DEVS	include/ok_type.h	27;"	d
@@ -1099,18 +1104,24 @@ OK_NR_MINOR	include/ok_type.h	28;"	d
 OK_QSET	include/ok_type.h	25;"	d
 OK_QUANTUM	include/ok_type.h	26;"	d
 OK_RESULT	include/ok_const.h	/^typedef unsigned int OK_RESULT;$/;"	t
-OK_RSA_DECRYPT	include/ok_const.h	54;"	d
-OK_RSA_ENCRYPT	include/ok_const.h	53;"	d
+OK_RSA_DECRYPT	include/ok_const.h	57;"	d
+OK_RSA_ENCRYPT	include/ok_const.h	56;"	d
 OK_RSA_KEY_SIZE	include/ok_const.h	39;"	d
-OK_SIGN_HASH	include/ok_const.h	56;"	d
-OK_SRK_CREATE	include/ok_const.h	47;"	d
-OK_SRK_LOAD	include/ok_const.h	48;"	d
+OK_SIGN_HASH	include/ok_const.h	61;"	d
+OK_SRK_CREATE	include/ok_const.h	49;"	d
+OK_SRK_LOAD	include/ok_const.h	50;"	d
 OK_SRK_NOT_FOUND	include/ok_const.h	37;"	d
 OK_SUCCESS	include/ok_const.h	33;"	d
-OK_USER_RSA_CREATE	include/ok_const.h	50;"	d
-OK_USER_RSA_LOAD	include/ok_const.h	51;"	d
+OK_USER_AES_CREATE	include/ok_const.h	65;"	d
+OK_USER_AES_LOAD	include/ok_const.h	66;"	d
+OK_USER_RSA_CREATE	include/ok_const.h	54;"	d
+OK_USER_RSA_LOAD	include/ok_const.h	55;"	d
+OK_USER_WRAP_AES_CREATE	include/ok_const.h	73;"	d
+OK_USER_WRAP_AES_LOAD	include/ok_const.h	74;"	d
+OK_USER_WRAP_RSA_CREATE	include/ok_const.h	71;"	d
+OK_USER_WRAP_RSA_LOAD	include/ok_const.h	72;"	d
 OK_VALUE_ERROR	include/ok_const.h	35;"	d
-OK_VERIFY_HASH	include/ok_const.h	57;"	d
+OK_VERIFY_HASH	include/ok_const.h	62;"	d
 OK_VERSION	include/ok_const.h	46;"	d
 OK_VERSION_ID	include/ok_const.h	30;"	d
 OPT_CAST	libtommath/tommath.h	50;"	d
@@ -1259,7 +1270,9 @@ _ncr_sessions_item_put	libtomcrypt/hashes/ncr-sessions.c	/^static void _ncr_sess
 access_key	include/ok_type.h	/^    unsigned int access_key;$/;"	m	struct:ok_dev
 add_entropy	libtomcrypt/headers/tomcrypt_prng.h	/^	int (*add_entropy) (const unsigned char *in, unsigned long inlen,$/;"	m	struct:ltc_prng_descriptor
 aes_cbc_oids	libtomcrypt/hashes/ncr-sessions.c	/^const static struct algo_oid_st aes_cbc_oids[] = {$/;"	v	typeref:struct:algo_oid_st	file:
+aes_decrypt_data_extend	ok_crypto_api.c	/^OK_RESULT aes_decrypt_data_extend(unsigned char *in,int inlen, unsigned char *out, int *outlen,unsigned char * key)$/;"	f
 aes_ecb_oids	libtomcrypt/hashes/ncr-sessions.c	/^const static struct algo_oid_st aes_ecb_oids[] = {$/;"	v	typeref:struct:algo_oid_st	file:
+aes_encrypt_data_extend	ok_crypto_api.c	/^OK_RESULT aes_encrypt_data_extend(unsigned char *in,int inlen, unsigned char *out, int *outlen,unsigned char * key)$/;"	f
 algo	libtomcrypt/headers/ncr-int.h	/^	ncr_algorithm_t algo;$/;"	m	struct:algo_properties_st
 algo_oid_st	libtomcrypt/headers/ncr-int.h	/^struct algo_oid_st {$/;"	s
 algo_properties	libtomcrypt/hashes/ncr-sessions.c	/^static const struct algo_properties_st algo_properties[] = {$/;"	v	typeref:struct:algo_properties_st	file:
@@ -1680,6 +1693,8 @@ off_mm	libtomcrypt/headers/tomcrypt_pk.h	/^	 off_mm;		\/* timezone offset minute
 oid	libtomcrypt/headers/ncr-int.h	/^	oid_st oid;$/;"	m	struct:algo_oid_st
 oid_st	libtomcrypt/headers/tomcrypt_pk.h	/^} oid_st;$/;"	t	typeref:struct:Oid
 oids	libtomcrypt/headers/ncr-int.h	/^	const struct algo_oid_st *oids;$/;"	m	struct:algo_properties_st	typeref:struct:algo_properties_st::algo_oid_st
+ok_aes_decrypt_user_data	ok_api.c	/^OK_RESULT ok_aes_decrypt_user_data(unsigned long arg)$/;"	f
+ok_aes_encrypt_user_data	ok_api.c	/^OK_RESULT ok_aes_encrypt_user_data(unsigned long arg)$/;"	f
 ok_alloc_data	ok_mem.c	/^void ** ok_alloc_data()$/;"	f
 ok_alloc_qsetp	ok_mem.c	/^struct ok_qset * ok_alloc_qsetp(void)$/;"	f
 ok_alloc_quantum	ok_mem.c	/^char * ok_alloc_quantum(void)$/;"	f
@@ -1688,18 +1703,27 @@ ok_cleanup	ok_main.c	/^static OK_RESULT ok_cleanup(void)$/;"	f	file:
 ok_compat_ioctl	ok_file.c	/^long ok_compat_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)$/;"	f
 ok_create_key	ok_api.c	/^OK_RESULT ok_create_key(rsa_key **key)$/;"	f
 ok_create_srk	ok_api.c	/^OK_RESULT ok_create_srk(rsa_key **key)$/;"	f
+ok_create_user_aes	ok_api.c	/^OK_RESULT ok_create_user_aes(unsigned long __user arg)$/;"	f
 ok_create_user_rsa	ok_api.c	/^OK_RESULT ok_create_user_rsa(unsigned long __user arg)$/;"	f
+ok_create_user_wrap_aes	ok_api.c	/^OK_RESULT ok_create_user_wrap_aes(unsigned long __user arg)$/;"	f
+ok_create_user_wrap_rsa	ok_api.c	/^OK_RESULT ok_create_user_wrap_rsa(unsigned long __user arg)$/;"	f
 ok_crypto-objs	Makefile	/^ok_crypto-objs := ok_main.o ok_file.o ok_mem.o ok_test.o ok_api.o ok_crypto_api.o$/;"	m
 ok_crypto_exit	ok_main.c	/^module_exit(ok_crypto_exit);$/;"	v
 ok_crypto_exit	ok_main.c	/^static void ok_crypto_exit(void)$/;"	f	file:
 ok_crypto_init	ok_main.c	/^module_init(ok_crypto_init);$/;"	v
 ok_crypto_init	ok_main.c	/^static int ok_crypto_init(void)$/;"	f	file:
+ok_decrypt_aes_by_rsa	ok_crypto_api.c	/^OK_RESULT ok_decrypt_aes_by_rsa(unsigned char *aes_key, rsa_key *fa, unsigned char *blob)$/;"	f
+ok_decrypt_aes_by_srk	ok_crypto_api.c	/^OK_RESULT ok_decrypt_aes_by_srk(unsigned char *aes_key, unsigned char *blob)$/;"	f
 ok_decrypt_mp_by_rsa	ok_crypto_api.c	/^static OK_RESULT ok_decrypt_mp_by_rsa(mp_int *in, rsa_key *key, unsigned char *blob, int *pos)$/;"	f	file:
+ok_decrypt_rsa_by_rsa	ok_crypto_api.c	/^OK_RESULT ok_decrypt_rsa_by_rsa(rsa_key *in,rsa_key *fa, unsigned char *blob)$/;"	f
 ok_decrypt_rsa_by_srk	ok_crypto_api.c	/^OK_RESULT ok_decrypt_rsa_by_srk(rsa_key *in, unsigned char *blob)$/;"	f
 ok_dev	include/ok_type.h	/^struct ok_dev$/;"	s
 ok_dev_name	ok_main.c	/^static char ok_dev_name[] = "ok_crypto";$/;"	v	file:
 ok_devs	ok_main.c	/^struct ok_dev *ok_devs;$/;"	v	typeref:struct:ok_dev
+ok_encrypt_aes_by_rsa	ok_crypto_api.c	/^OK_RESULT ok_encrypt_aes_by_rsa(unsigned char * aes_key,rsa_key *fa, unsigned char *blob)$/;"	f
+ok_encrypt_aes_by_srk	ok_crypto_api.c	/^OK_RESULT ok_encrypt_aes_by_srk(unsigned char * aes_key, unsigned char *blob)$/;"	f
 ok_encrypt_mp_by_rsa	ok_crypto_api.c	/^static OK_RESULT ok_encrypt_mp_by_rsa(mp_int *in, rsa_key *key, unsigned char *blob, int *pos)$/;"	f	file:
+ok_encrypt_rsa_by_rsa	ok_crypto_api.c	/^OK_RESULT ok_encrypt_rsa_by_rsa(rsa_key *in, rsa_key *fa, unsigned char * blob)$/;"	f
 ok_encrypt_rsa_by_srk	ok_crypto_api.c	/^OK_RESULT ok_encrypt_rsa_by_srk(rsa_key *in, unsigned char *blob)$/;"	f
 ok_fops	ok_main.c	/^struct file_operations ok_fops = $/;"	v	typeref:struct:file_operations
 ok_free_rsa_key	ok_api.c	/^OK_RESULT ok_free_rsa_key(rsa_key **key)$/;"	f
@@ -1708,7 +1732,10 @@ ok_llseek	ok_file.c	/^loff_t ok_llseek(struct file *filp, loff_t loff, int whenc
 ok_load_blob	ok_api.c	/^static OK_RESULT ok_load_blob(unsigned char *blob, char *filename)$/;"	f	file:
 ok_load_rsa_key	ok_api.c	/^OK_RESULT ok_load_rsa_key(rsa_key **key, char *file_name)$/;"	f
 ok_load_srk	ok_api.c	/^OK_RESULT ok_load_srk(rsa_key **key)$/;"	f
+ok_load_user_aes	ok_api.c	/^OK_RESULT ok_load_user_aes(unsigned long __user arg)$/;"	f
 ok_load_user_rsa	ok_api.c	/^OK_RESULT ok_load_user_rsa(unsigned long __user arg)$/;"	f
+ok_load_user_wrap_aes	ok_api.c	/^OK_RESULT ok_load_user_wrap_aes(unsigned long __user arg)$/;"	f
+ok_load_user_wrap_rsa	ok_api.c	/^OK_RESULT ok_load_user_wrap_rsa(unsigned long __user arg)$/;"	f
 ok_major	ok_main.c	/^static int ok_major = 0, ok_minor = 0;$/;"	v	file:
 ok_make_hash	ok_crypto_api.c	/^OK_RESULT ok_make_hash(unsigned char *in, int inlen, unsigned char *hash, int *outlen)$/;"	f
 ok_make_user_hash	ok_api.c	/^OK_RESULT ok_make_user_hash(unsigned long arg)$/;"	f
@@ -1864,9 +1891,6 @@ start	libtomcrypt/headers/tomcrypt_prng.h	/^	int (*start) (prng_state * prng);$/
 start	libtomcrypt/pk/asn1/der/set/der_encode_setof.c	/^   unsigned char *start;$/;"	m	struct:edge	file:
 t	libtommath/bn_mp_prime_rabin_miller_trials.c	/^	int k, t;$/;"	m	struct:__anon24	file:
 test	libtomcrypt/headers/tomcrypt_prng.h	/^	int (*test) (void);$/;"	m	struct:ltc_prng_descriptor
-test	ok_file.c	/^static void test()$/;"	f	file:
-test1	ok_file.c	/^static void test1()$/;"	f	file:
-test2	ok_file.c	/^void test2()$/;"	f
 transparent_hash	libtomcrypt/hashes/ncr-sessions.c	/^	void *transparent_hash;$/;"	m	struct:session_item_st	file:
 transparent_hash_size	libtomcrypt/hashes/ncr-sessions.c	/^	unsigned transparent_hash_size;$/;"	m	struct:session_item_st	file:
 try_session_update	libtomcrypt/hashes/ncr-sessions.c	/^static int try_session_update(struct ncr_lists *lists,$/;"	f	file:

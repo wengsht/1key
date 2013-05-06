@@ -1,7 +1,7 @@
 /*
  * =====================================================================================
  *
- *       Filename:  test.c
+ *       Filename:  create_srk.c
  *
  *    Description:  
  *
@@ -26,10 +26,14 @@ int main()
 {
     struct OK_CONTEXT ok_context;
 
+    printf("## Creating Context ##\n");
     Ok_Create_Context(&ok_context);
 
-    ioctl(ok_context.fs, OK_USER_AES_CREATE);
+    printf("## Creating SRK##\n");
+    Ok_Create_Srk(&ok_context);
+    printf("## Creat SRK Done!##\n");
     
+    printf("## Freeing Context ##\n");
     Ok_Free_Context(&ok_context);
 
     return 0;
